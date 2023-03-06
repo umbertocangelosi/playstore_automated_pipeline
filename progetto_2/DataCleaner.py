@@ -5,6 +5,7 @@ class DataProcessing:
     def __init__(self):
         pass
     
+    # why this is not working ?
     def to_number(self, dataframe,column):        
         # leave only numbers and dots, then cast to int64
         dataframe = dataframe.assign(column = pd.to_numeric(df[column].str.replace('[^0-9.]', '')))
@@ -28,7 +29,7 @@ class DataProcessing:
         # remove duplicates entries with the same Name, platform, genre
         pass
     
-    def standardize_caps(format=('l','t','c')):
+    def standardize_text(format=('l','t','c')):
         # return all entries of a column in string lower case/title/capitalize, based on the parameter format
         pass
     
@@ -38,7 +39,7 @@ class DataProcessing:
     
     # Handling missing data
     
-    def remove_missing():
+    def remove_na():
         #remove rows with missing revelant data
         pass
     def fill_na():

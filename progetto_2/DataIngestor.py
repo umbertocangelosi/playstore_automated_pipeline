@@ -20,5 +20,28 @@ class DataIngestor():
     def read_html(self,url):
         pass
     
+    # import/export generalizzato(richiamando funzioni senza self all'interno di una macrofunzione con self o singole funzioni per ogni tipo di operazione e formato?
+    
+    def transaction(self, operation='save',extension='txt',name='untitled'):
+            
+        if operation == 'save':
+            if extension == 'csv':
+                pass
+            elif extension == 'txt':
+                pass
+            elif extension == 'json':
+                pass
+            pass
+        
+        elif operation == 'load':
+            if extension == 'csv':
+                pass
+            elif extension == 'txt':
+                pass
+            elif extension == 'json':
+                pass
+            pass
+        pass
+    
     
     
