@@ -1,11 +1,11 @@
 # print(df['Size'][df['Size'] != 'Varies with device'][~df['Size'].str.contains('M')[~df['Size'].str.contains('k')])
 import pandas as pd
-def column_to_number2(df,col):
-    df[col] = df[col].str.replace("Varies with device",'')
-    df[col] = df[col].str.replace('M', '000000')
-    df[col] = df[col].str.replace('k','000')
-    df[col] = pd.to_numeric(df[col].str.replace('[^0-9.]', '',regex=True))
-    return df
+# def column_to_number2(df,col):
+#     df[col] = df[col].str.replace("Varies with device",'')
+#     df[col] = df[col].str.replace('M', '000000')
+#     df[col] = df[col].str.replace('k','000')
+#     df[col] = pd.to_numeric(df[col].str.replace('[^0-9.]', '',regex=True))
+#     return df
 
 class DataCleaner:
     
@@ -18,17 +18,26 @@ class DataCleaner:
     #     dataframe = dataframe.assign(**{column: pd.to_numeric(dataframe[column].str.replace('[^0-9.]', '', regex=True))})
     #     return dataframe
     
-    def column_to_number(df,col):
-        df[col] = df[col].str.replace("Varies with device",'')
-        df[col] = df[col].str.replace('M', '000000')
-        df[col] = df[col].str.replace('k','000')
-        df[col] = pd.to_numeric(df[col].str.replace('[^0-9.]', '',regex=True))
-        return df
+    def column_to_number(dataframe,column):
+        dataframe[column] = dataframe[column].str.replace("Varies with device",'')
+        # replacing Giga with 9 zeros
+        dataframe[column] = dataframe[column].str.replace('G','000000000')
+        # replacing Mega with 6 zeros
+        dataframe[column] = dataframe[column].str.replace('M','000000')
+        # replacing kilo with 3 zeros
+        dataframe[column] = dataframe[column].str.replace('k','000')
+        dataframe[column] = pd.to_numeric(dataframe[column].str.replace('[^0-9.]', '',regex=True))
+        return dataframe
 
     def comma_to_dot(dataframe,column):
         # replace commas with dots, working so far
         dataframe[column] = dataframe[column].str.replace(',','.')
-        pass
+        return dataframe
+
+    def remove_dots(dataframe,column):
+        # remove dots from a column
+        dataframe[column] = dataframe[column].str.replace('.','')
+        return dataframe
 
     # def size_to_number():
     #     # replace (M with '000',k with '',G with '000000'). output in mega
@@ -49,7 +58,7 @@ class DataCleaner:
             dataframe[column] = dataframe[column].str.lower()
             return dataframe
         else:
-            print('Column type is not string\nAborting function')
+            print('Column is filled with integers\nAborting function')
             pass
         
     # def convert_types():
@@ -63,7 +72,7 @@ class DataCleaner:
         dataframe.dropna(subset=column,inplace=True)
         return dataframe
 
-    def fill_na(dataframe,column):
+    def fill_na_median(dataframe,column):
 
         # fill empty values with median,mean,mode, whatever
         dataframe[column].fillna(value=dataframe[column].median(),inplace=True)
