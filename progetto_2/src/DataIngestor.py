@@ -11,7 +11,7 @@ class DataIngestor():
 
     def read_csv(self,name_of_csv):
         #metodo per leggere un file csv dato il nome del file csv
-        df = pd.read_csv(f"database/{name_of_csv}.csv")
+        df = pd.read_csv(f"../database/{name_of_csv}.csv")
         return df
     
     def read_json(self,name_of_json):

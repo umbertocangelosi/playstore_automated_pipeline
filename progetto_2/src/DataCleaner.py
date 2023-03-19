@@ -12,14 +12,16 @@ class DataCleaner:
     def __init__(self,):
         pass
     
-    def cleanAll(self, dataframe):
+    def clean_all(self, dataframe):
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
         self.column_to_number(dataframe, "Installs")
         self.column_to_number(dataframe, "Size")
         self.column_to_number(dataframe, "Reviews")
+        self.column_to_number(dataframe, 'Price')
+        #self.column_to_number(dataframe, "Price")
         self.remove_column_duplicates(dataframe,"App")
         self.remove_na(dataframe,"App")
-        self.date_conversion(dataframe,"Last Updated")
+        #self.date_conversion(dataframe,"Last Updated")
         return dataframe
     # def to_number(self,dataframe,column):
         
@@ -51,10 +53,6 @@ class DataCleaner:
     # def size_to_number():
     #     # replace (M with '000',k with '',G with '000000'). output in mega
     #     pass
-
-    # def convert_date():
-    #     # convert date from string to date
-    #     pass
     
     def remove_column_duplicates(self,dataframe,column):
         # remove duplicates entries with the same Name, platform, genre
@@ -69,10 +67,11 @@ class DataCleaner:
         else:
             print('Column is filled with integers\nAborting function')
             pass
-        
-    # def convert_types():
-    #     # convert data types from x to y
-    #     pass
+    
+    
+    def date_conversion(self,dataframe,column):
+        dataframe[column] = pd.to_datetime(dataframe[column])
+        return dataframe
     
     # Handling missing data
     
@@ -87,6 +86,4 @@ class DataCleaner:
         dataframe[column].fillna(value=dataframe[column].median(),inplace=True)
         return dataframe
 
-    def date_conversion(self,dataframe,column):
-        dataframe[column] = pd.to_datetime(dataframe[column])
-        return dataframe
+
