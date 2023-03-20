@@ -11,7 +11,7 @@ dc.clean_all(google_dataframe)
 
 # # 5. Print a table and a plot chart for top 5 download apps with smallest size and highest downloading number
 
-# top_smallest_downloaded = google_dataframe.sort_values(by=['Size','Installs']).head(5)
+# top_smallest_downloaded = google_dataframe.sort_values(by=['Size','Installs'],ascending=[True,False]).head(5)
 # print(top_smallest_downloaded)
 # top_smallest_downloaded.plot.bar(x='App',y='Installs', color='Blue')
 # plt.show()

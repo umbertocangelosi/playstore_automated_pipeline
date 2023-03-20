@@ -18,15 +18,12 @@ class DataCleaner:
         self.column_to_number(dataframe, "Size")
         self.column_to_number(dataframe, "Reviews")
         self.column_to_number(dataframe, 'Price')
-        #self.column_to_number(dataframe, "Price")
         self.remove_column_duplicates(dataframe,"App")
         self.remove_na(dataframe,"App")
         #self.date_conversion(dataframe,"Last Updated")
         return dataframe
-    # def to_number(self,dataframe,column):
-        
+            
     #     # leave only numbers and dots, then cast to int64
-    #     dataframe = dataframe.assign(**{column: pd.to_numeric(dataframe[column].str.replace('[^0-9.]', '', regex=True))})
     #     return dataframe
     
     def column_to_number(self,dataframe,column):
@@ -68,7 +65,6 @@ class DataCleaner:
             print('Column is filled with integers\nAborting function')
             pass
     
-    
     def date_conversion(self,dataframe,column):
         dataframe[column] = pd.to_datetime(dataframe[column])
         return dataframe
@@ -82,8 +78,8 @@ class DataCleaner:
 
     def fill_na_median(self,dataframe,column):
 
-        # fill empty values with median,mean,mode, whatever
+        # fill empty values with median
         dataframe[column].fillna(value=dataframe[column].median(),inplace=True)
         return dataframe
 
-
+#     dataframe = dataframe.assign(**{column: pd.to_numeric(dataframe[column].str.replace('[^0-9.]', '', regex=True))})

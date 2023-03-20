@@ -4,44 +4,23 @@ class DataIngestor():
     def __init__(self) -> None:
         pass
 
-    def create_csv(self, name_of_db,df):
+    def create_csv(self, file_name, dataframe):
         #metodo per creare un csv se non esistente dato come base il nome da assegnare al file csv e un database
-        df.to_csv(f"./{name_of_db}.csv")
+        dataframe.to_csv(f"./{file_name}.csv")
         pass
 
-    def read_csv(self,name_of_csv):
-        #metodo per leggere un file csv dato il nome del file csv
-        df = pd.read_csv(f"../database/{name_of_csv}.csv")
-        return df
-    
-    def read_json(self,name_of_json):
-        pass
-
-    def read_html(self,url):
-        pass
-    
-    # import/export generalizzato(richiamando funzioni senza self all'interno di una macrofunzione con self o singole funzioni per ogni tipo di operazione e formato?
-    
-    def transaction(self, operation='save',extension='txt',name='untitled'):
-            
-        if operation == 'save':
-            if extension == 'csv':
-                pass
-            elif extension == 'txt':
-                pass
-            elif extension == 'json':
-                pass
-            pass
-        
-        elif operation == 'load':
-            if extension == 'csv':
-                pass
-            elif extension == 'txt':
-                pass
-            elif extension == 'json':
-                pass
-            pass
-        pass
-    
-    
-    
+    def read_file (self, filepath):
+        ext = filepath[-3:]
+        # metodo per leggere un file dato il nome del file e la sua estensione
+        if ext == 'csv':
+            return pd.read_csv(filepath)
+        elif ext == 'json':
+            return pd.read_json(filepath)
+        elif ext == 'htm' :
+            return pd.read_html(filepath)
+        elif ext == 'html' :
+            return pd.read_html(filepath)
+        # will be implemented with future type of files needed
+        else:
+            print('function not implemented for this type of file yet')
+            pass 
