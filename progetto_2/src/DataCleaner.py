@@ -20,6 +20,8 @@ class DataCleaner:
         self.column_to_number(dataframe, 'Price')
         self.remove_column_duplicates(dataframe,"App")
         self.remove_na(dataframe,"App")
+        self.fill_na_median(dataframe, 'Size')
+        self.fill_na_median(dataframe, 'Rating')
         #self.date_conversion(dataframe,"Last Updated")
         return dataframe
             
@@ -27,7 +29,7 @@ class DataCleaner:
     #     return dataframe
     
     def column_to_number(self,dataframe,column):
-        dataframe[column] = dataframe[column].str.replace("Varies with device",'')
+        dataframe[column] = dataframe[column].astype(str).replace("Varies with device",'')
         # replacing Giga with 9 zeros
         dataframe[column] = dataframe[column].str.replace('G','000000000')
         # replacing Mega with 6 zeros
