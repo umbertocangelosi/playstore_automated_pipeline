@@ -17,7 +17,7 @@ dc.clean_all(google_dataframe)
 # plt.show()
 
 
-# 6. Print a table and a plot chart for top 5 download apps in each category free and paid (if there is paid)
+# # 6. Print a table and a plot chart for top 5 download apps in each category free and paid (if there is paid)
 
 # top_paid_apps = google_dataframe[google_dataframe['Type'] == 'Paid'].sort_values(by=['Installs','Rating','Price'],ascending=False).head(5)
 # top_paid_apps['Installs'] = top_paid_apps['Installs'] / 2000000
