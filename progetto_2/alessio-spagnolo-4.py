@@ -6,7 +6,7 @@ from src.DataIngestor import DataIngestor
 di = DataIngestor()
 dc = DataCleaner()
 google_dataframe = pd.read_csv(r'C:\Users\Alessio\Desktop\Progetti Team 1\develhope_2023_team1\progetto_2\database\googleplaystore.csv'
-                               ).drop(10472)
+                               )
 dc.clean_all(google_dataframe)
 
 # # 5. Print a table and a plot chart for top 5 download apps with smallest size and highest downloading number
