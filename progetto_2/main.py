@@ -12,3 +12,4 @@ google_data = di.read_file("./progetto_2/database/googleplaystore.csv")
 
 dc.clean_all(google_data)
 print(google_data.info())
+print(google_data.isna().sum())
