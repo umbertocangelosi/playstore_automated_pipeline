@@ -5,7 +5,7 @@ from src.DataCleaner import DataCleaner
 from src.DataIngestor import DataIngestor
 di = DataIngestor()
 dc = DataCleaner()
-df = pd.read_csv(r'C:\Users\riccardo\Desktop\corso_programmazione\develhope_2023_team1\progetto_2\database\googleplaystore.csv')
+df = pd.read_csv(r'.\progetto_2\database\googleplaystore.csv')
 dc.clean_all(df)
 
 
@@ -26,8 +26,8 @@ df_merged=pd.concat([pickle1,pickle3,pickle0,pickle2], ignore_index=True)
 
 #3-reverse the whole data set (the last row will be the first one) 
 df_reverse = df.iloc[::-1]
-#print(df_reverse)
+print(df_reverse)
 
 #4-apply sliding window technic and store the patches in a 2D list
-
+    
 
