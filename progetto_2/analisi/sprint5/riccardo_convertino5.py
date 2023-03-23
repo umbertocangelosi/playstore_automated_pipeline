@@ -22,7 +22,7 @@ pickle3=pd.read_pickle("./split3.pkl")
 
 #2-unlock the pickling and merge the dataset as follow 2-4-1-3 ## 1-3-0-2
 df_merged=pd.concat([pickle1,pickle3,pickle0,pickle2], ignore_index=True)
-#print(df_merged)
+print(df_merged)
 
 #3-reverse the whole data set (the last row will be the first one) 
 df_reverse = df.iloc[::-1]
