@@ -12,4 +12,4 @@ dv = DataVisualizer()
 
 google_data = di.read_file("./progetto_2/database/googleplaystore_cleaned.csv")
 
-dv.top_5_small(google_data, library='plt')
+dv.top_smallest(google_data)
