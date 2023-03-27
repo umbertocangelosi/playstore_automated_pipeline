@@ -35,7 +35,20 @@ class DataVisualizer:
         plt.ylabel(column2)
         plt.xticks(rotation=20)
         plt.show()
-    
+
+    def scatter_corr(self, dataframe, column1, column2, library='sns'):
+        if library == 'sns':
+            sns.scatterplot(data=dataframe, x=column1, y=column2, hue='Content Rating', size='Type',legend='full')
+
+        if library == 'plt':
+            plt.scatter(dataframe[column1],dataframe[column2])
+        
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.xticks(rotation=20)
+        plt.show()
+
+
     # plots based on business needs to take stock of the situation
     def visual_recap(self, dataframe, quantity=5):
         pass

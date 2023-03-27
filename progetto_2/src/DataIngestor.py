@@ -29,11 +29,11 @@ class DataIngestor():
         ext = filepath[-3:]
         # metodo per salvare un file
         if ext == 'csv':
-            return dataframe.to_csv(filepath)
+            return dataframe.to_csv(filepath, index=False)
         elif ext == 'json':
-            return dataframe.to_json(filepath)
+            return dataframe.to_json(filepath, index=False)
         elif ext == 'htm' :
-            return dataframe.to_html(filepath)
+            return dataframe.to_html(filepath, index=False)
         elif ext == 'html' :
-            return dataframe.to_html(filepath)
+            return dataframe.to_html(filepath, index=False)
      

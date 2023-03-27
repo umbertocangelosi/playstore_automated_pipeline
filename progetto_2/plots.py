@@ -12,3 +12,4 @@ dv = DataVisualizer()
 
 google_data = di.read_file("./progetto_2/database/googleplaystore_cleaned.csv")
 
+dv.scatter_corr(google_data,'Rating','Reviews')
