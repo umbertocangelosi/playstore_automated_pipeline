@@ -109,6 +109,92 @@ class DataVisualizer:
         plt.xticks(rotation = 12)
         plt.show()
 
+    def top_free_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):  
+        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Category","Score"]].sort_values(by='Score',ascending=False).head(quantity)
+        if library == 'plt':
+            plt.bar(dataframe[column1], dataframe[column2])
+        if library == 'sns':
+            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.title('Top 5 free Apps by sentiment')
+        plt.show()
+    
+    def worst_free_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
+        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Category","Score"]].sort_values(by='Score',ascending=True).head(quantity)
+        
+        if library == 'plt':
+            plt.bar(dataframe[column1], dataframe[column2])
+        if library == 'sns':
+            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.title('Worst 5 Apps by sentiment score')
+        plt.show()
+        
+    def worst_paid_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
+        dataframe = dataframe[dataframe['Type'] == 'Paid'][["App","Category","Score"]].sort_values(by='Score',ascending=True).head(quantity)
+        if library == 'plt':
+            plt.bar(dataframe[column1], dataframe[column2])
+        if library == 'sns':
+            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.title('Worst 5 paid Apps by sentiment score')
+        plt.show()        
+        
+    def top_paid_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
+        dataframe = dataframe[dataframe['Type'] == 'Paid'][["App","Category","Score"]].sort_values(by='Score',ascending=False).head(quantity)
+        if library == 'plt':
+            plt.bar(dataframe[column1], dataframe[column2])
+        if library == 'sns':
+            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.title('Top 5 paid Apps by sentiment score')
+        plt.show()        
+        
+    def global_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
+        
+        dataframe = sentiment_data[["App","Category","Score",'Type']].sort_values(by='Score',ascending=False)
+        dataframe.dropna(subset='Score',axis=0,inplace=True)
+        
+        dataframe_paid=dataframe[dataframe.Type=='Paid']
+        dataframe_free=dataframe[dataframe.Type=='Free']
+        
+        dataframe_paid=pd.concat([dataframe_paid.head(quantity),dataframe_paid.tail(quantity)])
+        dataframe_free=pd.concat([dataframe_free.head(quantity),dataframe_free.tail(quantity)])
+       
+        fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(10,12 ))
+        
+        if library == 'plt':
+            ax1.barh(dataframe_paid[column2], dataframe_paid[column1])
+            ax1.set_title("Top 5 and worst 5 paid Apps by sentiment score")
+            ax2.barh(dataframe_free[column2],dataframe_free[column1])
+            ax2.set_title("Top 5 and worst 5 free Apps by sentiment score")
+        
+        if library == 'sns':
+            sns.barplot(data=dataframe_paid, x=dataframe_paid[column1], y=dataframe_paid[column2],ax=ax1)
+            ax1.set_title("Top 5 and worst 5 paid Apps by sentiment score")
+            sns.barplot(data=dataframe_free, x=dataframe_free[column1], y=dataframe_free[column2],ax=ax2)
+            ax2.set_title("Top 5 and worst 5 free Apps by sentiment score")
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.show()        
+   
+    def categories_by_sentiment(self,dataframe, column2='Category', column1='Score', library='sns', quantity=5):
+       
+        if library == 'plt':
+            dataframe = dataframe.groupby(by='Category')['Score'].mean().sort_values(ascending=False)
+            dataframe.index.name('Category')
+            plt.barh(dataframe[column2])
+            
+        if library == 'sns':
+            sns.barplot(data=dataframe, y="Category", x="Score")
+        plt.xlabel(column1)
+        plt.ylabel(column2)
+        plt.title('Worst 5 Apps by sentiment score')
+        plt.show()
 
 
 
