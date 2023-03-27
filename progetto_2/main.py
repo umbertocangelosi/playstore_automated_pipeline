@@ -3,13 +3,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from src.DataIngestor import DataIngestor
-from src.DataCleaner import DataCleaner
-
-dc = DataCleaner()
 di = DataIngestor()
+from src.DataCleaner import DataCleaner
+dc = DataCleaner()
+from src.DataVisualizer import DataVisualizer
+dv = DataVisualizer()
 
 google_data = di.read_file("./progetto_2/database/googleplaystore.csv")
-
 dc.clean_all(google_data)
-print(google_data.info())
-print(google_data.isna().sum())
+di.save_file(google_data, "./progetto_2/database/googleplaystore_cleaned.csv")

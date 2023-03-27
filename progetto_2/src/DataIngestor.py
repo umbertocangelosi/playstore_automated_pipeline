@@ -9,6 +9,7 @@ class DataIngestor():
         dataframe.to_csv(f"./{file_name}.csv")
         pass
 
+    
     def read_file (self, filepath):
         ext = filepath[-3:]
         # metodo per leggere un file dato il nome del file e la sua estensione
@@ -22,5 +23,17 @@ class DataIngestor():
             return pd.read_html(filepath)
         # will be implemented with future type of files needed
         else:
-            print('function not implemented for this type of file yet')
-            pass 
+            return 'function not implemented for this type of file yet'
+    
+    def save_file (self, dataframe, filepath):
+        ext = filepath[-3:]
+        # metodo per salvare un file
+        if ext == 'csv':
+            return dataframe.to_csv(filepath, index=False)
+        elif ext == 'json':
+            return dataframe.to_json(filepath, index=False)
+        elif ext == 'htm' :
+            return dataframe.to_html(filepath, index=False)
+        elif ext == 'html' :
+            return dataframe.to_html(filepath, index=False)
+     

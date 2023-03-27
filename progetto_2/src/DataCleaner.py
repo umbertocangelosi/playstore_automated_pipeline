@@ -25,7 +25,7 @@ class DataCleaner:
         #self.date_conversion(dataframe,"Last Updated")
         return dataframe
             
-    #     # leave only numbers and dots, then cast to int64
+    #     leave only numbers and dots, then cast to int64
     #     return dataframe
     
     def column_to_number(self,dataframe,column):

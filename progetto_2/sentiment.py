@@ -56,7 +56,6 @@ app_score = reviews.groupby(by='App').agg({'Score':'mean'}).reset_index()
 
 # merging ['Score'] mean to primary google dataset
 google_dataframe = pd.merge(google_dataframe, app_score, how='left', on='App')
-
 paid_apps = google_dataframe[google_dataframe['Type'] == 'Paid']
 
 # 1 find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature). ➝ ANOVA: controlla se le medie in gruppi diversi sono significativamente differenti
@@ -72,11 +71,7 @@ price_by_content_only_paid.plot.bar()
 plt.title('Paid Apps')
 plt.xlabel('Category')
 plt.ylabel('Average price')
-plt.xticks(rotation = 12)
-plt.show()
-
-
-# 3 for paid apps only list the top 5 highest and lowest sentiment numbers with the name of the app and the app category 
+plt.xticks(rotation = 12)ame of the app and the app category 
 
 top_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=False).head(5)
 worst_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=True).head(5)
