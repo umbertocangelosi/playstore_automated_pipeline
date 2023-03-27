@@ -21,22 +21,22 @@ dc.remove_na(reviews,'Translated_Review')
 # removing unnecessary columns
 reviews = reviews.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'])
 
-# UMBERTO?
+# reset index 
 reviews.reset_index(inplace=True)
 reviews.drop('index',axis=1,inplace=True)
 # end of cleaning
 
+# 2 find the sentiment of all apps using np files (negative words and positive words) and "afinn" lib 
+
 # creation of the list contains the negative and positive words to use with 'AFINN method'.
-# UMBERTO?
 negative = pd.read_excel('./progetto_2/database/n.xlsx')
 negative = negative.values.tolist()
-# UMBERTO?
+
 positive = pd.read_excel('./progetto_2/database/p.xlsx')
 positive = positive.values.tolist()
 
 import itertools
 
-# UMBERTO dicci tu cosa fa questo pezzo di codice
 lista_appiattita_p = list(itertools.chain.from_iterable(positive))
 lista_appiattita_n = list(itertools.chain.from_iterable(negative))
 lista = lista_appiattita_n + lista_appiattita_p
@@ -74,8 +74,6 @@ plt.xlabel('Category')
 plt.ylabel('Average price')
 plt.xticks(rotation = 12)
 plt.show()
-
-# 2 find the sentiment of all apps using np files (negative words and positive words) and "afinn" lib 
 
 
 # 3 for paid apps only list the top 5 highest and lowest sentiment numbers with the name of the app and the app category 
