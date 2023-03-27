@@ -21,22 +21,22 @@ dc.remove_na(reviews,'Translated_Review')
 # removing unnecessary columns
 reviews = reviews.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'])
 
-# UMBERTO?
+# reset index 
 reviews.reset_index(inplace=True)
 reviews.drop('index',axis=1,inplace=True)
 # end of cleaning
 
+# 2 find the sentiment of all apps using np files (negative words and positive words) and "afinn" lib 
+
 # creation of the list contains the negative and positive words to use with 'AFINN method'.
-# UMBERTO?
 negative = pd.read_excel('./progetto_2/database/n.xlsx')
 negative = negative.values.tolist()
-# UMBERTO?
+
 positive = pd.read_excel('./progetto_2/database/p.xlsx')
 positive = positive.values.tolist()
 
 import itertools
 
-# UMBERTO dicci tu cosa fa questo pezzo di codice
 lista_appiattita_p = list(itertools.chain.from_iterable(positive))
 lista_appiattita_n = list(itertools.chain.from_iterable(negative))
 lista = lista_appiattita_n + lista_appiattita_p
@@ -58,34 +58,28 @@ app_score = reviews.groupby(by='App').agg({'Score':'mean'}).reset_index()
 google_dataframe = pd.merge(google_dataframe, app_score, how='left', on='App')
 paid_apps = google_dataframe[google_dataframe['Type'] == 'Paid']
 
-# # 1 find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature). ➝ ANOVA: controlla se le medie in gruppi diversi sono significativamente differenti
-# price_by_content = google_dataframe.groupby(by='Content Rating')['Price'].mean()
-# price_by_content_only_paid = paid_apps.groupby(by='Content Rating')['Price'].mean()
-# price_by_content.plot.bar()
-# plt.title('All apps')
-# plt.xlabel('Category')
-# plt.ylabel('Average price')
-# plt.xticks(rotation = 13)
-# plt.show()
-# price_by_content_only_paid.plot.bar()
-# plt.title('Paid Apps')
-# plt.xlabel('Category')
-# plt.ylabel('Average price')
-# plt.xticks(rotation = 12)
-# plt.show()
+# 1 find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature). ➝ ANOVA: controlla se le medie in gruppi diversi sono significativamente differenti
+price_by_content = google_dataframe.groupby(by='Content Rating')['Price'].mean()
+price_by_content_only_paid = paid_apps.groupby(by='Content Rating')['Price'].mean()
+price_by_content.plot.bar()
+plt.title('All apps')
+plt.xlabel('Category')
+plt.ylabel('Average price')
+plt.xticks(rotation = 13)
+plt.show()
+price_by_content_only_paid.plot.bar()
+plt.title('Paid Apps')
+plt.xlabel('Category')
+plt.ylabel('Average price')
+plt.xticks(rotation = 12)ame of the app and the app category 
 
-# # 2 find the sentiment of all apps using np files (negative words and positive words) and "afinn" lib 
+top_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=False).head(5)
+worst_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=True).head(5)
+print('\nThese are the best 5 paid apps according to our sentiment analysis\n')
+print(top_5_paid)
+print('\nThese are the worst 5 paid apps according to our sentiment analysis\n')
+print(worst_5_paid)
 
-
-# # 3 for paid apps only list the top 5 highest and lowest sentiment numbers with the name of the app and the app category 
-
-# top_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=False).head(5)
-# worst_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=True).head(5)
-# print('\nThese are the best 5 paid apps according to our sentiment analysis\n')
-# print(top_5_paid)
-# print('\nThese are the worst 5 paid apps according to our sentiment analysis\n')
-# print(worst_5_paid)
-
-# # 4 what is the best category according to sentiment values
-# best_category = google_dataframe.groupby(by='Category')['Score'].mean().sort_values(ascending=False).head(1).index[0]
-# print(f'\nThe best category according to our sentiment analysis is: {best_category}\n')
+# 4 what is the best category according to sentiment values
+best_category = google_dataframe.groupby(by='Category')['Score'].mean().sort_values(ascending=False).head(1).index[0]
+print(f'\nThe best category according to our sentiment analysis is: {best_category}\n')
