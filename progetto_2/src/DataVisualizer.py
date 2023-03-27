@@ -56,11 +56,11 @@ class DataVisualizer:
         #self.top_paid(dataframe,quantity)
 
 
-    #Top 5 higher installs
-    def top_high_installs(self, dataframe, column1='App', column2='Installs', library='sns', quantity=5):
+    # top 5 higher installs / chiedere per aggiungere piu colonne all'asse y
+    def top_apps(self, dataframe, column1='App', column2='Installs', library='sns', quantity=5):
         dataframe = dataframe.sort_values(by=['Installs','Rating','Reviews'],ascending=False).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1], height=dataframe[column2])
         if library == 'sns':
             sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
         plt.xlabel(column1)
@@ -68,23 +68,24 @@ class DataVisualizer:
         plt.xticks(rotation=12)
         plt.show()
 
-    #Top 5 categories by rating(mean)
-    def top_rating_by_cat(self, dataframe, library='sns'):
+    # top categories by rating(mean)
+    def top_categories(self, dataframe, library='sns'):
+        plt.figure(figsize=(18,10))  
         series_cat = dataframe.groupby("Category")["Rating"].mean()
         series_cat_df=series_cat.reset_index()
         series_cat_df.columns= ['Category', 'Ratingmean']
         if library == 'plt':
             plt.bar(series_cat_df["Category"], series_cat_df["Ratingmean"])
         if library == 'sns':
-            sns.barplot(data=series_cat_df, x="Category",y="Ratingmean")  
+            sns.barplot(data=series_cat_df, x="Category",y="Ratingmean")
         plt.xticks(rotation=12)
         plt.show()
 
       
-    #Top 5 paid categories by price(sum)
-    def top_paid_cat(self, dataframe, library='plt'):
+    # top 5 paid categories by price(sum)
+    def top_paid_categories(self, dataframe, library='sns',quantity=5):
         series_cat = dataframe.groupby("Category")["Price"].sum()
-        series_cat_df=series_cat.reset_index()
+        series_cat_df=series_cat.reset_index().sort_values(by='Price',ascending=False).head(quantity)
         series_cat_df.columns= ['Category', 'PriceSum']
         if library == 'plt':
             plt.bar(series_cat_df["Category"], series_cat_df["PriceSum"])
@@ -93,8 +94,8 @@ class DataVisualizer:
         plt.xticks(rotation=12)
         plt.show()
 
-    #Find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature).
-    def Plot_price_per_contentrating(self, dataframe, library='sns'):
+    # find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature).
+    def avg_price_users(self, dataframe, library='sns'):
         paid_apps = dataframe[dataframe['Type'] == 'Paid']
         price_by_content_only_paid = paid_apps.groupby(by='Content Rating')['Price'].mean()
         price_by_content_only_paid_df=price_by_content_only_paid.reset_index()
@@ -106,22 +107,26 @@ class DataVisualizer:
         plt.title('Paid Apps')
         plt.xlabel('Category')
         plt.ylabel('Average price')
-        plt.xticks(rotation = 12)
+        plt.xticks(rotation = 4)
         plt.show()
 
-    def top_free_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):  
-        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Category","Score"]].sort_values(by='Score',ascending=False).head(quantity)
+    # top FREE apps by SENTIMENT
+    def top_free_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
+        plt.figure(figsize=(16,6))  
+        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Score"]].sort_values(by='Score',ascending=False).head(quantity)
         if library == 'plt':
             plt.bar(dataframe[column1], dataframe[column2])
         if library == 'sns':
             sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
         plt.xlabel(column1)
         plt.ylabel(column2)
-        plt.title('Top 5 free Apps by sentiment')
+        plt.xticks(rotation=5)
+        plt.title(f'Top {quantity} free Apps by sentiment')
         plt.show()
     
+    # worst FREE apps by SENTIMENT
     def worst_free_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
-        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Category","Score"]].sort_values(by='Score',ascending=True).head(quantity)
+        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Score"]].sort_values(by='Score',ascending=True).head(quantity)
         
         if library == 'plt':
             plt.bar(dataframe[column1], dataframe[column2])
@@ -129,9 +134,10 @@ class DataVisualizer:
             sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
         plt.xlabel(column1)
         plt.ylabel(column2)
-        plt.title('Worst 5 Apps by sentiment score')
+        plt.title(f'Worst {quantity} Apps by sentiment score')
         plt.show()
-        
+    
+    # worst PAID apps by SENTIMENT
     def worst_paid_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
         dataframe = dataframe[dataframe['Type'] == 'Paid'][["App","Category","Score"]].sort_values(by='Score',ascending=True).head(quantity)
         if library == 'plt':
@@ -140,9 +146,10 @@ class DataVisualizer:
             sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
         plt.xlabel(column1)
         plt.ylabel(column2)
-        plt.title('Worst 5 paid Apps by sentiment score')
+        plt.title(f'Worst {quantity} paid Apps by sentiment score')
         plt.show()        
-        
+    
+    # top PAID apps by SENTIMENT
     def top_paid_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
         dataframe = dataframe[dataframe['Type'] == 'Paid'][["App","Category","Score"]].sort_values(by='Score',ascending=False).head(quantity)
         if library == 'plt':
@@ -152,25 +159,23 @@ class DataVisualizer:
         plt.xlabel(column1)
         plt.ylabel(column2)
         plt.title('Top 5 paid Apps by sentiment score')
-        plt.show()        
+        plt.show()
         
-    def global_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
-        
-        dataframe = sentiment_data[["App","Category","Score",'Type']].sort_values(by='Score',ascending=False)
+    def global_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
+      
         dataframe.dropna(subset='Score',axis=0,inplace=True)
-        
+        dataframe = dataframe[["App","Score",'Type']].sort_values(by='Score',ascending=False)       
         dataframe_paid=dataframe[dataframe.Type=='Paid']
         dataframe_free=dataframe[dataframe.Type=='Free']
-        
         dataframe_paid=pd.concat([dataframe_paid.head(quantity),dataframe_paid.tail(quantity)])
         dataframe_free=pd.concat([dataframe_free.head(quantity),dataframe_free.tail(quantity)])
        
-        fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(10,12 ))
-        
+        fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(18,10))
+
         if library == 'plt':
-            ax1.barh(dataframe_paid[column2], dataframe_paid[column1])
+            ax1.bar(dataframe_paid[column1], dataframe_paid[column2])
             ax1.set_title("Top 5 and worst 5 paid Apps by sentiment score")
-            ax2.barh(dataframe_free[column2],dataframe_free[column1])
+            ax2.bar(dataframe_free[column1],dataframe_free[column2])
             ax2.set_title("Top 5 and worst 5 free Apps by sentiment score")
         
         if library == 'sns':
@@ -180,6 +185,8 @@ class DataVisualizer:
             ax2.set_title("Top 5 and worst 5 free Apps by sentiment score")
         plt.xlabel(column1)
         plt.ylabel(column2)
+        ax1.tick_params(axis='x',rotation=10)
+        ax2.tick_params(axis='x',rotation=10)
         plt.show()        
    
     def categories_by_sentiment(self,dataframe, column2='Category', column1='Score', library='sns', quantity=5):
