@@ -10,7 +10,7 @@ dc = DataCleaner()
 di = DataIngestor()
 dv = DataVisualizer()
 #sns.set()
-google_data = di.read_file("./progetto_2/database/googleplaystore_cleaned.csv")
+google_data = di.read_file("./progetto_2/data/output/cleaned_data/googleplaystore_cleaned.csv")
 google_sentiment = di.read_file(r'.\progetto_2\database\googlevis.csv')
 #dv.scatter_corr(google_data,'Rating','Reviews')
 

@@ -16,6 +16,7 @@ dc.clean_all(google_dataframe)
 reviews = di.read_file('./progetto_2/database/googleplaystore_user_reviews.csv')
 
 # removing na values from review since it's important to know it's content, 26868 rows are filled with nan and we don't need them
+# DA RIGA 20 A RIGA 27 RICCARDO
 dc.remove_na(reviews,'Translated_Review')
 
 # removing unnecessary columns
@@ -26,6 +27,9 @@ reviews.reset_index(inplace=True)
 reviews.drop('index',axis=1,inplace=True)
 # end of cleaning
 
+
+
+#### ALESSIO DA QUI IN GIU
 # creation of the list contains the negative and positive words to use with 'AFINN method'.
 # UMBERTO?
 negative = pd.read_excel('./progetto_2/database/n.xlsx')
@@ -56,6 +60,8 @@ app_score = reviews.groupby(by='App').agg({'Score':'mean'}).reset_index()
 
 # merging ['Score'] mean to primary google dataset
 google_dataframe = pd.merge(google_dataframe, app_score, how='left', on='App')
+### DATI PULITI ORA ###
+
 paid_apps = google_dataframe[google_dataframe['Type'] == 'Paid']
 
 # 1 find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature). ➝ ANOVA: controlla se le medie in gruppi diversi sono significativamente differenti
