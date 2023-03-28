@@ -71,7 +71,8 @@ price_by_content_only_paid.plot.bar()
 plt.title('Paid Apps')
 plt.xlabel('Category')
 plt.ylabel('Average price')
-plt.xticks(rotation = 12)ame of the app and the app category 
+plt.xticks(rotation = 12)
+plt.show()#ame of the app and the app category 
 
 top_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=False).head(5)
 worst_5_paid = paid_apps[["App","Category","Score"]].sort_values(by='Score',ascending=True).head(5)
