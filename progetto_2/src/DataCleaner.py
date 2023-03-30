@@ -1,12 +1,7 @@
-# print(df['Size'][df['Size'] != 'Varies with device'][~df['Size'].str.contains('M')[~df['Size'].str.contains('k')])
 import pandas as pd
 import itertools
-# def column_to_number2(df,col):
-#     df[col] = df[col].str.replace("Varies with device",'')
-#     df[col] = df[col].str.replace('M', '000000')
-#     df[col] = df[col].str.replace('k','000')
-#     df[col] = pd.to_numeric(df[col].str.replace('[^0-9.]', '',regex=True))
-#     return df
+from src.DataIngestor import DataIngestor
+di = DataIngestor()
 
 class DataCleaner:
     
@@ -26,14 +21,11 @@ class DataCleaner:
         #self.date_conversion(dataframe,"Last Updated")
         return dataframe
     
-    def clean_googlereview(self, dataframe):
-        # removing unnecessary columns
+    def clean_googlereviews(self, dataframe):
         dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'], inplace=True)
         self.remove_na(dataframe,'Translated_Review')
-        
-        # dataframe.reset_index(inplace=True)
-        # dataframe.drop('index',axis=1,inplace=True)
-        #leave only numbers and dots, then cast to int64
+        dataframe.reset_index(inplace=True)
+        dataframe.drop('index',axis=1,inplace=True)
         return dataframe
     
     def clean_sentiment_list(self, lista_p, lista_n):
@@ -43,6 +35,10 @@ class DataCleaner:
         lista_appiattita_n = list(itertools.chain.from_iterable(negative))
         lista = lista_appiattita_n + lista_appiattita_p
         return lista
+    
+    def replace_common_strings(self, dataframe, col_name, string_list):
+        dataframe[col_name] = dataframe[col_name].apply(lambda x: " ".join([string for string in str(x).split() if string in string_list]))
+        return dataframe
     
     def column_to_number(self,dataframe,column):
         dataframe[column] = dataframe[column].astype(str).replace("Varies with device",'')

@@ -190,7 +190,7 @@ class DataVisualizer:
         ax2.tick_params(axis='x',rotation=10)
         plt.show()        
    
-    def categories_by_sentiment(self,dataframe, column2='Category', column1='Score', library='sns', quantity=5):
+    def categories_by_sentiment(self,dataframe, column2='Category', column1='Score', library='sns'):
        
         if library == 'plt':
             dataframe = dataframe.groupby(by='Category')['Score'].mean().sort_values(ascending=False)
