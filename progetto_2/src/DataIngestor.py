@@ -17,7 +17,7 @@ class DataIngestor():
             return pd.read_html(filepath)
         elif ext =='xlxs':
             return pd.read_excel(filepath)
-        elif ext == 'pkl':
+        elif ext == '.pkl':
             return pd.read_peakle(filepath)  
         # will be implemented with future type of files needed
         else:
