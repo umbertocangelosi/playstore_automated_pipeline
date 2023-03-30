@@ -12,7 +12,7 @@ class DataCleaner:
     def __init__(self,):
         pass
     
-    def clean_all(self, dataframe):
+    def clean_googledb(self, dataframe):
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
         self.column_to_number(dataframe, "Installs")
         self.column_to_number(dataframe, "Size")
@@ -24,9 +24,16 @@ class DataCleaner:
         self.fill_na_median(dataframe, 'Rating')
         #self.date_conversion(dataframe,"Last Updated")
         return dataframe
-            
-    #     leave only numbers and dots, then cast to int64
-    #     return dataframe
+    
+    def clean_googlereview(self, dataframe):
+        # removing unnecessary columns
+        dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'], inplace=True)
+        self.remove_na(dataframe,'Translated_Review')
+        
+        # dataframe.reset_index(inplace=True)
+        # dataframe.drop('index',axis=1,inplace=True)
+        #leave only numbers and dots, then cast to int64
+        return dataframe
     
     def column_to_number(self,dataframe,column):
         dataframe[column] = dataframe[column].astype(str).replace("Varies with device",'')
