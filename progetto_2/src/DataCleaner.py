@@ -1,5 +1,6 @@
 # print(df['Size'][df['Size'] != 'Varies with device'][~df['Size'].str.contains('M')[~df['Size'].str.contains('k')])
 import pandas as pd
+import itertools
 # def column_to_number2(df,col):
 #     df[col] = df[col].str.replace("Varies with device",'')
 #     df[col] = df[col].str.replace('M', '000000')
@@ -34,6 +35,14 @@ class DataCleaner:
         # dataframe.drop('index',axis=1,inplace=True)
         #leave only numbers and dots, then cast to int64
         return dataframe
+    
+    def clean_sentiment_list(self, lista_p, lista_n):
+        negative = lista_n.values.tolist()
+        positive = lista_p.values.tolist()        
+        lista_appiattita_p = list(itertools.chain.from_iterable(positive))
+        lista_appiattita_n = list(itertools.chain.from_iterable(negative))
+        lista = lista_appiattita_n + lista_appiattita_p
+        return lista
     
     def column_to_number(self,dataframe,column):
         dataframe[column] = dataframe[column].astype(str).replace("Varies with device",'')
