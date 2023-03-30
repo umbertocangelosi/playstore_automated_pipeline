@@ -29,7 +29,7 @@ chunk4 = pd.read_pickle(r"C:\Users\Alessio\Desktop\Progetti Team 1\develhope_202
 merged_chunks = pd.concat([chunk2,chunk4,chunk1,chunk3], ignore_index=True)
 print(merged_chunks)
 
-# 3 reverse the whole data set (the last row will be the first one) 
+# 3 reverse the whole data set (the last row will be the first one)
 
 reverse_google = google_dataframe.iloc[::-1,:]
 
