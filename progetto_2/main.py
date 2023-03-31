@@ -24,8 +24,9 @@ google_reviews = dc.clean_googlereviews(google_reviews)
 google_reviews = dc.replace_common_strings(google_reviews, 'Translated_Review', sentiment_words)
 di.save_file(google_reviews, './progetto_2/data/output/google_reviews.pkl')
 
-da.assign_sentiment(google_data, google_reviews)
+google_data = da.assign_sentiment(google_data, google_reviews)
 di.save_file(google_data, './progetto_2/data/output/google_scored.pkl')
 print ('\ngoogle_scored.pkl has been stored successfully\n')
 google_sentiment_data = di.read_file('./progetto_2/data/output/google_scored.pkl')
+print('\n\n\nDONE\n\n\n')
 

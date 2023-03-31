@@ -5,7 +5,7 @@ di = DataIngestor()
 
 class DataCleaner:
     
-    def __init__(self,):
+    def __init__(self):
         pass
     
     def clean_googledb(self, dataframe):
@@ -35,7 +35,7 @@ class DataCleaner:
         lista_appiattita_n = list(itertools.chain.from_iterable(negative))
         lista = lista_appiattita_n + lista_appiattita_p
         return lista
-    
+
     def replace_common_strings(self, dataframe, col_name, string_list):
         dataframe[col_name] = dataframe[col_name].apply(lambda x: " ".join([string for string in str(x).split() if string in string_list]))
         return dataframe
@@ -52,7 +52,7 @@ class DataCleaner:
         return dataframe
 
     def comma_to_dot(self,dataframe,column):
-        # replace commas with dots, working so far
+        # replace commas with dots
         dataframe[column] = dataframe[column].str.replace(',','.')
         return dataframe
 
@@ -60,10 +60,6 @@ class DataCleaner:
         # remove dots from a column
         dataframe[column] = dataframe[column].str.replace('.','')
         return dataframe
-
-    # def size_to_number():
-    #     # replace (M with '000',k with '',G with '000000'). output in mega
-    #     pass
     
     def remove_column_duplicates(self,dataframe,column):
         # remove duplicates entries with the same Name, platform, genre
