@@ -1,14 +1,18 @@
 import pandas as pd
 
 class DataIngestor():
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     def read_file (self, filepath):
         ext = filepath[-4:]
+        name = filepath.split('\\')[-1]
         # metodo per leggere un file dato il nome del file e la sua estensione
         if ext == '.csv':
-            return pd.read_csv(filepath)
+            file = pd.read_csv(filepath)
+            file.name = name
+            return file
+
         elif ext == 'json':
             return pd.read_json(filepath)
         elif ext == '.htm' :
