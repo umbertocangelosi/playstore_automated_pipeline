@@ -15,10 +15,10 @@ class DataIngestor():
             return pd.read_html(filepath)
         elif ext == 'html' :
             return pd.read_html(filepath)
-        elif ext =='xlxs':
+        elif ext =='xlsx':
             return pd.read_excel(filepath)
         elif ext == '.pkl':
-            return pd.read_peakle(filepath)  
+            return pd.read_pickle(filepath)  
         # will be implemented with future type of files needed
         else:
             return 'function not implemented for this type of file yet'
