@@ -12,19 +12,20 @@ from src.DataAnalyser import DataAnalyser
 da = DataAnalyser()
 
 google_data = di.read_file("./progetto_2/data/raw/googleplaystore.csv")
-dc.clean_all(google_data)
-# SALVA IL FILE IN PICKLE NELLA CARTELLA CLEANED_DATA
-di.save_file(google_data, "./progetto_2/data/output/cleaned_data/googleplaystore_cleaned.pkl")
+google_data = dc.clean_googledb(google_data)
+di.save_file(google_data, "./progetto_2/data/output/googleplaystore_cleaned.pkl")
 
-# CARICARE IL FILE DELLE REVIEWS IN CSV
-di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
-# PULIRE IL FILE DELLE REVIEWS
+negative = di.read_file('./progetto_2/data/raw/n.xlsx')
+positive = di.read_file('./progetto_2/data/raw/p.xlsx')
+sentiment_words = dc.clean_sentiment_list(positive,negative)
 
-# CARICARE FILE NEGATIVE E POSITIVE WORDS.XLSX
-# PROCESSARE I FILE
-# SOSTITUIRE PAROLE NELLA COLONNA TRANSLATED REVIEWS CON QUELLE DELLA LISTA NUOVA
-# CREARE COLONNA SCORE NEL DATAFRAME REVIEWS TRAMITE AFN.SCORE
-# GRUPPARE PER APP IL DATAFRAME REVIEWS E FARE MEDIA DI SCORE
-# MERGE GOOGLEDATA + REVIEWS E SOVRASCRIVERE GOOGLEDATA
-da.analysis(google_data)
-# SALVA IL NUOVO GOOGLEDATA CON GLI SCORE SU FILE PICKLE NELLA CARTELLA ANALYSIS
+google_reviews = di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
+google_reviews = dc.clean_googlereviews(google_reviews)
+google_reviews = dc.replace_common_strings(google_reviews, 'Translated_Review', sentiment_words)
+di.save_file(google_reviews, './progetto_2/data/output/google_reviews.pkl')
+
+da.assign_sentiment(google_data, google_reviews)
+di.save_file(google_data, './progetto_2/data/output/google_scored.pkl')
+print ('\ngoogle_scored.pkl has been stored successfully\n')
+google_sentiment_data = di.read_file('./progetto_2/data/output/google_scored.pkl')
+

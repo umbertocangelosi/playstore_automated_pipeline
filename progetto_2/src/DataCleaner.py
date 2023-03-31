@@ -1,18 +1,14 @@
-# print(df['Size'][df['Size'] != 'Varies with device'][~df['Size'].str.contains('M')[~df['Size'].str.contains('k')])
 import pandas as pd
-# def column_to_number2(df,col):
-#     df[col] = df[col].str.replace("Varies with device",'')
-#     df[col] = df[col].str.replace('M', '000000')
-#     df[col] = df[col].str.replace('k','000')
-#     df[col] = pd.to_numeric(df[col].str.replace('[^0-9.]', '',regex=True))
-#     return df
+import itertools
+from src.DataIngestor import DataIngestor
+di = DataIngestor()
 
 class DataCleaner:
     
     def __init__(self,):
         pass
     
-    def clean_all(self, dataframe):
+    def clean_googledb(self, dataframe):
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
         self.column_to_number(dataframe, "Installs")
         self.column_to_number(dataframe, "Size")
@@ -24,9 +20,25 @@ class DataCleaner:
         self.fill_na_median(dataframe, 'Rating')
         #self.date_conversion(dataframe,"Last Updated")
         return dataframe
-            
-    #     leave only numbers and dots, then cast to int64
-    #     return dataframe
+    
+    def clean_googlereviews(self, dataframe):
+        dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'], inplace=True)
+        self.remove_na(dataframe,'Translated_Review')
+        dataframe.reset_index(inplace=True)
+        dataframe.drop('index',axis=1,inplace=True)
+        return dataframe
+    
+    def clean_sentiment_list(self, lista_p, lista_n):
+        negative = lista_n.values.tolist()
+        positive = lista_p.values.tolist()        
+        lista_appiattita_p = list(itertools.chain.from_iterable(positive))
+        lista_appiattita_n = list(itertools.chain.from_iterable(negative))
+        lista = lista_appiattita_n + lista_appiattita_p
+        return lista
+    
+    def replace_common_strings(self, dataframe, col_name, string_list):
+        dataframe[col_name] = dataframe[col_name].apply(lambda x: " ".join([string for string in str(x).split() if string in string_list]))
+        return dataframe
     
     def column_to_number(self,dataframe,column):
         dataframe[column] = dataframe[column].astype(str).replace("Varies with device",'')
