@@ -9,6 +9,7 @@ class DataCleaner:
         pass
     
     def clean_googledb(self, dataframe):
+        print("Cleaning main database")
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
         self.column_to_number(dataframe, "Installs")
         self.column_to_number(dataframe, "Size")
@@ -22,6 +23,7 @@ class DataCleaner:
         return dataframe
     
     def clean_googlereviews(self, dataframe):
+        print("Cleaning reviews database")
         dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'], inplace=True)
         self.remove_na(dataframe,'Translated_Review')
         dataframe.reset_index(inplace=True)
@@ -29,6 +31,7 @@ class DataCleaner:
         return dataframe
     
     def clean_sentiment_list(self, lista_p, lista_n):
+        print("Cleaning good and bad database")
         negative = lista_n.values.tolist()
         positive = lista_p.values.tolist()        
         lista_appiattita_p = list(itertools.chain.from_iterable(positive))
