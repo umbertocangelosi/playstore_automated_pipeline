@@ -13,36 +13,63 @@ class DataVisualizer:
     # Top 5 Apps with smallest size and highest downloads
     # just select the dataframe
     # if app and installs columns were renamed, then use new names as parameters of column 1&2
-    def top_smallest(self, dataframe, column1='App', column2='Installs', library='sns', quantity=5):
+    def top_smallest(self, dataframe, column1='App', column2='Rating', library='sns', quantity=5):
         dataframe = dataframe.sort_values(by=['Size','Installs','Rating'], ascending=[True,False,False]).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1], 
+                    dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
-        plt.xlabel(column1)
-        plt.ylabel(column2)
-        plt.xticks(rotation=20)
+            sns.barplot(data=dataframe, 
+                        x=dataframe[column1], 
+                        y=dataframe[column2])
+
+        plt.title(f'Top {quantity} smallest Apps', 
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column1,
+                   fontsize=12)
+        plt.ylabel(column2,
+                   fontsize=12)
+        plt.xticks(rotation=45,
+                   fontsize=12)
+        plt.yticks(fontsize=13)
         plt.show()
 
     # top 5 paid apps (based on installs->rating->review)
 
-    def top_paid(self, dataframe, column1='App', column2='Installs', library='sns', quantity=5):
-        dataframe = dataframe[dataframe['Type'] == 'Paid'].sort_values(by=['Installs','Rating','Reviews'],ascending=False).head(quantity)
+    def top_paid(self, dataframe, column1='App', column2='Rating', library='sns', quantity=5):
+        order = ['Installs','Rating','Reviews','App']
+        dataframe = dataframe[dataframe['Type'] == 'Paid'][order].sort_values(by=order,ascending=False).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1], 
+                    dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
-        plt.xlabel(column1)
-        plt.ylabel(column2)
-        plt.xticks(rotation=20)
+            sns.barplot(data=dataframe, 
+                        x=dataframe[column1], 
+                        y=dataframe[column2])
+        plt.title(f'Top {quantity} paid Apps', 
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column1,
+                   fontsize=12)
+        plt.ylabel(column2,
+                   fontsize=12)
+        plt.xticks(rotation=20,
+                   fontsize=12)
+        plt.yticks(fontsize=13)
         plt.show()
 
     def scatter_corr(self, dataframe, column1, column2, library='sns'):
         if library == 'sns':
-            sns.scatterplot(data=dataframe, x=column1, y=column2, hue='Content Rating', size='Type',legend='full')
+            sns.scatterplot(data=dataframe, 
+                            x=column1, 
+                            y=column2, 
+                            hue='Content Rating', 
+                            size='Type',legend='full')
 
         if library == 'plt':
-            plt.scatter(dataframe[column1],dataframe[column2])
+            plt.scatter(dataframe[column1],
+                        dataframe[column2])
         
         plt.xlabel(column1)
         plt.ylabel(column2)
@@ -58,28 +85,48 @@ class DataVisualizer:
 
 
     # top 5 higher installs / chiedere per aggiungere piu colonne all'asse y
-    def top_apps(self, dataframe, column1='App', column2='Installs', library='sns', quantity=5):
-        dataframe = dataframe.sort_values(by=['Installs','Rating','Reviews'],ascending=False).head(quantity)
+    def top_apps(self, dataframe, column1='App', column2='Rating', library='sns', quantity=5):
+        order = ['Installs','Rating','Reviews','App']
+        dataframe = dataframe[order].sort_values(by=order,ascending=False).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], height=dataframe[column2])
+            plt.bar(dataframe[column1], 
+                    height=dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2]) # hue 
-        plt.xlabel(column1)
-        plt.ylabel(column2)
-        plt.xticks(rotation=12)
+            sns.barplot(data=dataframe, 
+                        x=dataframe[column1], 
+                        y=dataframe[column2]) # hue 
+        plt.title(f'Top {quantity} most installed Apps', 
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column1,
+                   fontsize=12)
+        plt.ylabel(column2,
+                   fontsize=12)
+        plt.xticks(rotation=45,
+                   fontsize=12)
+        plt.yticks(fontsize=12)
         plt.show()
 
     # top categories by rating(mean)
     def top_categories(self, dataframe, library='sns'):
-        plt.figure(figsize=(18,10))  
+        plt.figure(figsize=(17,9))  
         series_cat = dataframe.groupby("Category")["Rating"].mean()
         series_cat_df=series_cat.reset_index()
         series_cat_df.columns= ['Category', 'Ratingmean']
         if library == 'plt':
-            plt.bar(series_cat_df["Category"], series_cat_df["Ratingmean"])
+            plt.bar(series_cat_df["Category"], 
+                    series_cat_df["Ratingmean"])
         if library == 'sns':
-            sns.barplot(data=series_cat_df, x="Category",y="Ratingmean")
-        plt.xticks(rotation=12)
+            sns.barplot(data=series_cat_df, 
+                        x="Category",
+                        y="Ratingmean")
+        plt.title('Top categories', 
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xticks(rotation=90,
+                   fontsize=12)
+        plt.yticks(fontsize=12)
+        plt.ylabel('Rating medio per categoria')
         plt.show()
 
       
@@ -89,10 +136,19 @@ class DataVisualizer:
         series_cat_df=series_cat.reset_index().sort_values(by='Price',ascending=False).head(quantity)
         series_cat_df.columns= ['Category', 'PriceSum']
         if library == 'plt':
-            plt.bar(series_cat_df["Category"], series_cat_df["PriceSum"])
+            plt.bar(series_cat_df["Category"], 
+                    series_cat_df["PriceSum"])
         if library == 'sns':
-            sns.barplot(data=series_cat_df, x="Category",y="PriceSum")
-        plt.xticks(rotation=12)
+            sns.barplot(data=series_cat_df, 
+                        x="Category",
+                        y="PriceSum")
+        plt.xticks(rotation=12,
+                   fontsize=12)
+        plt.title('Top paid categories',
+                   fontsize = 16,
+                   fontweight = 'bold')
+        plt.yticks(fontsize=12)
+        plt.ylabel('Somma dei prezzi')
         plt.show()
 
     # find if there is a correlation between the price of the apps and the category (Teen, Everyone, Mature).
@@ -102,13 +158,20 @@ class DataVisualizer:
         price_by_content_only_paid_df=price_by_content_only_paid.reset_index()
         price_by_content_only_paid_df.columns= ['Content Rating', 'Pricemean']
         if library == 'plt':
-            plt.bar(price_by_content_only_paid_df["Content Rating"], price_by_content_only_paid_df["Pricemean"])
+            plt.bar(price_by_content_only_paid_df["Content Rating"],
+                    price_by_content_only_paid_df["Pricemean"])
         if library == 'sns':
-            sns.barplot(data=price_by_content_only_paid_df, x="Content Rating",y="Pricemean")
-        plt.title('Paid Apps')
+            sns.barplot(data=price_by_content_only_paid_df,
+                        x="Content Rating",
+                        y="Pricemean")
+        plt.title('Content correlation with price', 
+                  fontsize=16,
+                  fontweight='bold')
         plt.xlabel('Category')
         plt.ylabel('Average price')
-        plt.xticks(rotation = 4)
+        plt.xticks(rotation = 4,
+                   fontsize=12)
+        plt.yticks(fontsize=12)
         plt.show()
 
     # top FREE apps by SENTIMENT
@@ -116,56 +179,92 @@ class DataVisualizer:
         plt.figure(figsize=(16,6))  
         dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Score"]].sort_values(by='Score',ascending=False).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1],
+                    dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
+            sns.barplot(data=dataframe,
+                        x=dataframe[column1],
+                        y=dataframe[column2])
         plt.xlabel(column1)
         plt.ylabel(column2)
-        plt.xticks(rotation=5)
+        plt.xticks(rotation=35)
         plt.title(f'Top {quantity} free Apps by sentiment')
         plt.show()
     
     # worst FREE apps by SENTIMENT
-    def worst_free_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
-        dataframe = dataframe[dataframe['Type'] == 'Free'][["App","Score"]].sort_values(by='Score',ascending=True).head(quantity)
+    def worst_free_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
+        order = ['Score','Rating','Installs','Reviews','App','Type']
+        dataframe = dataframe[dataframe['Type'] == 'Free'][order].sort_values(by=order,ascending=True).head(quantity)
         
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1],
+                    dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
-        plt.xlabel(column1)
-        plt.ylabel(column2)
-        plt.title(f'Worst {quantity} Apps by sentiment score')
+            sns.barplot(data=dataframe,
+                        x=dataframe[column1],
+                        y=dataframe[column2])
+        plt.title(f'Worst {quantity} Apps by sentiment score',
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column1,
+                   fontsize=12)
+        plt.ylabel(column2,
+                   fontsize=12)
+        plt.xticks(rotation=45,
+                   fontsize=12)
+        plt.yticks(fontsize=13)
         plt.show()
     
     # worst PAID apps by SENTIMENT
-    def worst_paid_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
-        dataframe = dataframe[dataframe['Type'] == 'Paid'][["App","Category","Score"]].sort_values(by='Score',ascending=True).head(quantity)
+    def worst_paid_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
+        order = ['Score','Rating','Installs','Reviews','App','Type']
+        dataframe = dataframe[dataframe['Type'] == 'Paid'][order].sort_values(by=order,ascending=True).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1],
+                    dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
-        plt.xlabel(column1)
-        plt.ylabel(column2)
-        plt.title(f'Worst {quantity} paid Apps by sentiment score')
-        plt.show()        
+            sns.barplot(data=dataframe,
+                        x=dataframe[column1],
+                        y=dataframe[column2])
+        plt.title(f'Worst {quantity} paid Apps by sentiment score',
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column1,
+                   fontsize=12)
+        plt.ylabel(column2,
+                   fontsize=12)
+        plt.xticks(rotation=20,
+                   fontsize=12)
+        plt.yticks(fontsize=13)
+        plt.show()      
     
     # top PAID apps by SENTIMENT
-    def top_paid_by_sentiment(self,dataframe, column2='App', column1='Score', library='sns', quantity=5):
-        dataframe = dataframe[dataframe['Type'] == 'Paid'][["App","Category","Score"]].sort_values(by='Score',ascending=False).head(quantity)
+    def top_paid_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
+        order = ['Score','Rating','Installs','Reviews','App','Type']
+        dataframe = dataframe[dataframe['Type'] == 'Paid'][order].sort_values(by=order,ascending=False).head(quantity)
         if library == 'plt':
-            plt.bar(dataframe[column1], dataframe[column2])
+            plt.bar(dataframe[column1],
+                    dataframe[column2])
         if library == 'sns':
-            sns.barplot(data=dataframe, x=dataframe[column1], y=dataframe[column2])
-        plt.xlabel(column1)
-        plt.ylabel(column2)
-        plt.title('Top 5 paid Apps by sentiment score')
-        plt.show()
+            sns.barplot(data=dataframe,
+                        x=dataframe[column1],
+                        y=dataframe[column2])
+        plt.title(f'Top {quantity} paid Apps by sentiment score',
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column1,
+                   fontsize=12)
+        plt.ylabel(column2,
+                   fontsize=12)
+        plt.xticks(rotation=20,
+                   fontsize=12)
+        plt.yticks(fontsize=13)
+        plt.show()    
         
     def global_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
       
         dataframe.dropna(subset='Score',axis=0,inplace=True)
-        dataframe = dataframe[["App","Score",'Type']].sort_values(by='Score',ascending=False)       
+        dataframe = dataframe[["App","Score",'Type']].sort_values(by=['Score','Rating','Installs','Reviews'],ascending=False)       
         dataframe_paid=dataframe[dataframe.Type=='Paid']
         dataframe_free=dataframe[dataframe.Type=='Free']
         dataframe_paid=pd.concat([dataframe_paid.head(quantity),dataframe_paid.tail(quantity)])
@@ -190,20 +289,68 @@ class DataVisualizer:
         ax2.tick_params(axis='x',rotation=10)
         plt.show()        
    
-    def categories_by_sentiment(self,dataframe, column2='Category', column1='Score', library='sns'):
+    def categories_by_sentiment(self,dataframe, column1='Category', column2='Score', library='sns'):
        
-        if library == 'plt':
-            dataframe = dataframe.groupby(by='Category')['Score'].mean().sort_values(ascending=False)
-            dataframe.index.name('Category')
-            plt.barh(dataframe[column2])
+        # if library == 'plt':
+        #     dataframe = dataframe.groupby(by='Category')['Score'].mean().sort_values(ascending=False)
+        #     dataframe.index.name('Category')
+        #     plt.barh(dataframe[column2])
             
         if library == 'sns':
-            sns.barplot(data=dataframe, y="Category", x="Score")
+            sns.barplot(data=dataframe,
+                        y="Category",
+                        x="Score")
         plt.xlabel(column1)
         plt.ylabel(column2)
-        plt.title('Worst 5 Apps by sentiment score')
+        plt.title('Categories by sentiment score')
+        plt.show()
+        
+    def top_by_sentiment(self,dataframe, column1='App', column2='Score', library='sns', quantity=5):
+        plt.figure(figsize=(8.5,5))
+        order = ['Score','Rating','Installs','Reviews','App','Type']
+        dataframe = dataframe[order].sort_values(by=order,ascending=False).head(quantity)
+        if library == 'plt':
+            plt.bar(dataframe[column1],
+                    dataframe[column2])
+        if library == 'sns':
+            sns.barplot(data=dataframe,
+                        x=dataframe[column2],
+                        y=dataframe[column1],
+                        orient='h')
+        plt.title(f'Top {quantity} Apps by sentiment score',
+                  fontsize = 16, 
+                  fontweight = 'bold')
+        plt.xlabel(column2,
+                   fontsize=12)
+        plt.ylabel(column1,
+                   fontsize=12)
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
         plt.show()
 
+    def rating_vs_score(self, data, quantity=5):
+        order = ['Score','Rating','Installs','Reviews','App']
+        data = data[order].sort_values(by=order,ascending=False).head(quantity)
+        data = pd.melt(data,
+                       id_vars=['App'],
+                       value_vars=['Score','Rating'])
+        plt.figure(figsize=(14,6))
+        sns.barplot(data=data,
+                    y=data['App'], 
+                    x=data['value'],
+                    hue='variable',
+                    orient='h')
+        plt.title(f'Score vs Rating\nTop {quantity} apps by sentiment',
+                  fontsize=16,
+                  fontweight='bold')
+        plt.ylabel('Apps',
+                   fontsize=12)
+        plt.xlabel('Value',
+                   fontsize=12)
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
+        plt.legend(fontsize=10)
+        plt.show()
 
 
 
