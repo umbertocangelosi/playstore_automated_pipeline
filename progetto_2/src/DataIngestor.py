@@ -1,6 +1,7 @@
 import pandas as pd
 
 class DataIngestor():
+    
     def __init__(self):
         pass
 

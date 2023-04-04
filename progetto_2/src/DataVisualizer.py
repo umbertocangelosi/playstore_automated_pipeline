@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from afinn import Afinn
-afn = Afinn()
 
+from afinn import Afinn
+
+afn = Afinn()
 
 class DataVisualizer:
     def __init__(self):

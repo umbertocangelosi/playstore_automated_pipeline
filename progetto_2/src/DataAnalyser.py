@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
+
 from afinn import Afinn
+
 afn = Afinn()
 
 class DataAnalyser:
