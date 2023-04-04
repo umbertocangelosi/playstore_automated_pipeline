@@ -1,14 +1,13 @@
 import pandas as pd
 import itertools
-from src.DataIngestor import DataIngestor
-di = DataIngestor()
 
 class DataCleaner:
-    
+
     def __init__(self):
         pass
     
     def clean_googledb(self, dataframe):
+
         print("Cleaning main database")
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
         self.column_to_number(dataframe, "Installs")
