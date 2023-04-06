@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.axes as ax
 import seaborn as sns
 import numpy as np
 from src.DataIngestor import DataIngestor
@@ -41,7 +42,8 @@ google = di.read_file('.\progetto_2\data\output\googleplaystore_cleaned.pkl')
 # dv.top_by_sentiment(scores_google,library='sns',quantity=6)
 # print('\nRiga43\n')
 # dv.top_by_sentiment(scores_google,column2='Rating', library='sns',quantity=6)
-# dv.rating_vs_score(scores_google, quantity=15)
+# dv.rating_vs_score(scores_google, quantity=6, worst_results=True)
+# dv.scatter_corr(scores_google,'Score','Rating')
 
 
 

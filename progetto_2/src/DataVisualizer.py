@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.axes as ax
 import seaborn as sns
 
 from afinn import Afinn
@@ -31,8 +32,7 @@ class DataVisualizer:
                    fontsize=12)
         plt.ylabel(column2,
                    fontsize=12)
-        plt.xticks(rotation=45,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=13)
         plt.show()
 
@@ -55,8 +55,7 @@ class DataVisualizer:
                    fontsize=12)
         plt.ylabel(column2,
                    fontsize=12)
-        plt.xticks(rotation=20,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=13)
         plt.show()
 
@@ -65,8 +64,8 @@ class DataVisualizer:
             sns.scatterplot(data=dataframe, 
                             x=column1, 
                             y=column2, 
-                            hue='Content Rating', 
-                            size='Type',legend='full')
+                            hue='Type', 
+                            legend='full')
 
         if library == 'plt':
             plt.scatter(dataframe[column1],
@@ -74,9 +73,7 @@ class DataVisualizer:
         
         plt.xlabel(column1)
         plt.ylabel(column2)
-        plt.xticks(rotation=20)
         plt.show()
-
 
     # plots based on business needs to take stock of the situation
     def visual_recap(self, dataframe, quantity=5):
@@ -87,6 +84,7 @@ class DataVisualizer:
 
     # top 5 higher installs / chiedere per aggiungere piu colonne all'asse y
     def top_apps(self, dataframe, column1='App', column2='Rating', library='sns', quantity=5):
+
         order = ['Installs','Rating','Reviews','App']
         dataframe = dataframe[order].sort_values(by=order,ascending=False).head(quantity)
         if library == 'plt':
@@ -103,9 +101,10 @@ class DataVisualizer:
                    fontsize=12)
         plt.ylabel(column2,
                    fontsize=12)
-        plt.xticks(rotation=45,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
+        plt.ylim(bottom=4,
+                 top=4.6)
         plt.show()
 
     # top categories by rating(mean)
@@ -124,8 +123,7 @@ class DataVisualizer:
         plt.title('Top categories', 
                   fontsize = 16, 
                   fontweight = 'bold')
-        plt.xticks(rotation=90,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
         plt.ylabel('Rating medio per categoria')
         plt.show()
@@ -143,8 +141,7 @@ class DataVisualizer:
             sns.barplot(data=series_cat_df, 
                         x="Category",
                         y="PriceSum")
-        plt.xticks(rotation=12,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.title('Top paid categories',
                    fontsize = 16,
                    fontweight = 'bold')
@@ -170,8 +167,7 @@ class DataVisualizer:
                   fontweight='bold')
         plt.xlabel('Category')
         plt.ylabel('Average price')
-        plt.xticks(rotation = 4,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
         plt.show()
 
@@ -211,8 +207,7 @@ class DataVisualizer:
                    fontsize=12)
         plt.ylabel(column2,
                    fontsize=12)
-        plt.xticks(rotation=45,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=13)
         plt.show()
     
@@ -234,8 +229,7 @@ class DataVisualizer:
                    fontsize=12)
         plt.ylabel(column2,
                    fontsize=12)
-        plt.xticks(rotation=20,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=13)
         plt.show()      
     
@@ -257,8 +251,7 @@ class DataVisualizer:
                    fontsize=12)
         plt.ylabel(column2,
                    fontsize=12)
-        plt.xticks(rotation=20,
-                   fontsize=12)
+        plt.xticks(fontsize=12)
         plt.yticks(fontsize=13)
         plt.show()    
         
@@ -352,10 +345,3 @@ class DataVisualizer:
         plt.yticks(fontsize=12)
         plt.legend(fontsize=10)
         plt.show()
-
-
-
-
-
-
-
