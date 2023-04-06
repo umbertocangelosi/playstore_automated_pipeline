@@ -30,5 +30,5 @@ google_data = da.assign_sentiment(google_data, google_reviews)
 di.save_file(google_data, './progetto_2/data/output/google_scored.pkl')
 print ('\ngoogle_scored.pkl has been stored successfully\n')
 google_sentiment_data = di.read_file('./progetto_2/data/output/google_scored.pkl')
-print('\n\n\nDONE\n\n\n')
+print('\n\n\nMAIN PROCESS HAS BEEN COMPLETED\n\n\n')
 

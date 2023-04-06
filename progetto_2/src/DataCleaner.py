@@ -18,7 +18,6 @@ class DataCleaner:
         self.remove_na(dataframe,"App")
         self.fill_na_median(dataframe, 'Size')
         self.fill_na_median(dataframe, 'Rating')
-        #self.date_conversion(dataframe,"Last Updated")
         return dataframe
     
     def clean_googlereviews(self, dataframe):
@@ -53,32 +52,9 @@ class DataCleaner:
         dataframe[column] = pd.to_numeric(dataframe[column].str.replace('[^0-9.]', '',regex=True))
         return dataframe
 
-    def comma_to_dot(self,dataframe,column):
-        # replace commas with dots
-        dataframe[column] = dataframe[column].str.replace(',','.')
-        return dataframe
-
-    def remove_dots(self,dataframe,column):
-        # remove dots from a column
-        dataframe[column] = dataframe[column].str.replace('.','')
-        return dataframe
-    
     def remove_column_duplicates(self,dataframe,column):
         # remove duplicates entries with the same Name, platform, genre
         dataframe=dataframe.drop_duplicates(subset=column, inplace=True)
-        return dataframe
-
-    def standardize_text(self,dataframe,column):
-        # return all entries of a column in string lower case/title/capitalize, based on the parameter format
-        if dataframe[column].dtype != int:
-            dataframe[column] = dataframe[column].str.lower()
-            return dataframe
-        else:
-            print('Column is filled with integers\nAborting function')
-            pass
-    
-    def date_conversion(self,dataframe,column):
-        dataframe[column] = pd.to_datetime(dataframe[column])
         return dataframe
     
     # Handling missing data
@@ -93,5 +69,3 @@ class DataCleaner:
         # fill empty values with median
         dataframe[column].fillna(value=dataframe[column].median(),inplace=True)
         return dataframe
-
-#     dataframe = dataframe.assign(**{column: pd.to_numeric(dataframe[column].str.replace('[^0-9.]', '', regex=True))})
