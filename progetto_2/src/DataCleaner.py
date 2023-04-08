@@ -10,22 +10,27 @@ class DataCleaner:
 
         print("Cleaning main database")
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
-        self.column_to_number(dataframe, "Installs")
-        self.column_to_number(dataframe, "Size")
-        self.column_to_number(dataframe, "Reviews")
+        self.column_to_number(dataframe, 'Installs')
+        self.column_to_number(dataframe, 'Size')
+        self.column_to_number(dataframe, 'Reviews')
         self.column_to_number(dataframe, 'Price')
-        self.remove_column_duplicates(dataframe,"App")
-        self.remove_na(dataframe,"App")
-        self.fill_na_median(dataframe, 'Size')
-        self.fill_na_median(dataframe, 'Rating')
+        self.lower_case(dataframe)
+        self.remove_column_duplicates(dataframe, 'app')
+        self.remove_na(dataframe, 'app')
+        self.remove_na(dataframe, 'type')
+        self.fill_na_median(dataframe, 'size')
+        self.fill_na_median(dataframe, 'rating')
         return dataframe
     
-    def clean_googlereviews(self, dataframe):
+    def clean_google_reviews(self, dataframe, dataframe2):
         print("Cleaning reviews database")
-        dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity','Sentiment_Subjectivity'], inplace=True)
-        self.remove_na(dataframe,'Translated_Review')
+        dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity', 'Sentiment_Subjectivity'], inplace=True)
+        dataframe = dataframe.dropna()
         dataframe.reset_index(inplace=True)
-        dataframe.drop('index',axis=1,inplace=True)
+        dataframe.drop('index', axis=1, inplace=True)
+        self.lower_case(dataframe)
+        dataframe['translated_review'] = dataframe['translated_review'].astype(str)
+        dataframe = dataframe[dataframe['app'].isin(dataframe2['app'])]
         return dataframe
     
     def clean_sentiment_list(self, lista_p, lista_n):
@@ -53,7 +58,6 @@ class DataCleaner:
         return dataframe
 
     def remove_column_duplicates(self,dataframe,column):
-        # remove duplicates entries with the same Name, platform, genre
         dataframe=dataframe.drop_duplicates(subset=column, inplace=True)
         return dataframe
     
@@ -69,3 +73,14 @@ class DataCleaner:
         # fill empty values with median
         dataframe[column].fillna(value=dataframe[column].median(),inplace=True)
         return dataframe
+    
+    # standardize text in lower case
+
+    def lower_case(self, dataframe):
+
+        dataframe.columns = dataframe.columns.str.lower()
+        dataframe.columns = ['_'.join(x.split()).lower() for x in dataframe.columns]
+        for col in dataframe:
+            dataframe[col] = dataframe[col].apply(lambda x: x.lower() if type(x) == str else x)
+        return dataframe
+    

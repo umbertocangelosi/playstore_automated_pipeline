@@ -15,38 +15,29 @@ dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
 
-google_data = di.read_file("./data/raw/googleplaystore.csv")
+google_data = di.read_file("./progetto_2/data/raw/googleplaystore.csv")
 google_data = dc.clean_googledb(google_data)
 
+google_reviews = di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
+google_reviews = dc.clean_google_reviews(google_reviews, google_data)
 
-'''qui ci sono diverse operazioni di cleaning importanti da mettere dentro il 
-datacleaner per potere interagire senza errori con postgres'''
-google_data=google_data.dropna(subset='Type')
-google_data=google_data.rename(columns={'App': 'app','Category':'category','Rating':'rating','Reviews':'reviews','Size':'size','Installs':'installs','Type':'type','Price':'price','Content Rating':'content_rating','Genres':'genres','Last Updated':'last_update'})
+# connecting to the database via psycopg2
+conn = di.connect(dbname='postgres', 
+                  dbuser='postgres', 
+                  dbhost='localhost', 
+                  dbport='5432')
 
-google_reviews = di.read_file('./data/raw/googleplaystore_user_reviews.csv')
-google_reviews = dc.clean_googlereviews(google_reviews)
-
-'''idem con patatate ci sono diverse operazioni di cleaning importanti da mettere dentro il 
-datacleaner per potere interagire senza errori con postgres'''
-google_reviews = google_reviews.rename(columns={'App':'app','Translated_Review':'translated_review'})
-google_reviews=google_reviews.dropna()
-google_reviews['translated_review'] = google_reviews['translated_review'].astype(str)
-google_reviews=google_reviews[google_reviews['app'].isin(google_data['app'])]
-
-#ora i dati dovrebbero essere pronti per la parte di caricamento nel database
-
-#creo la connessione al database con psycopg2
-conn = di.connect('postgres','postgres','almno','localhost','5432')
-
-#creo le tabelle vuote tramite psycopg passando internamente le ddl
+# create empty tables
 di.create_google(conn)
 di.create_reviews(conn)
 
-#creo una connessione al database compatibile con il metodo db.to_sql(), usando la libreria sqlalchemy
-engine=di.create_engine('postgres','almno','localhost','5432','postgres')
+# creo una connessione al database compatibile con il metodo db.to_sql(), usando la libreria sqlalchemy
+engine=di.create_engine(dbname='postgres',
+                        dbuser='postgres',
+                        dbhost='localhost',
+                        dbport='5432')
 
 
-#carico i dati dei dataframe dentro postgress, che fungera' ora da data warehouseb
+# carico i dati dei dataframe dentro postgress, che fungera' ora da data warehouseb
 di.load(google_data,'googleplaystore',engine,replace=True,conn=conn)
 di.load(google_reviews,'google_reviews',engine,replace=True,conn=conn)
