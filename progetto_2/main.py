@@ -22,14 +22,11 @@ google_data = dc.clean_googledb(google_data)
 '''qui ci sono diverse operazioni di cleaning importanti da mettere dentro il 
 datacleaner per potere interagire senza errori con postgres'''
 google_data=google_data.dropna(subset='Type')
-google_data=google_data.rename(columns={'App': 'app','Category':'category','Rating':'rating','Reviews':'reviews','Size':'size','Installs':'installs','Type':'type','Price':'price','Content Rating':'content_rating','Genres':'genres','Last Updated':'last_update'})
-
 google_reviews = di.read_file('./data/raw/googleplaystore_user_reviews.csv')
 google_reviews = dc.clean_googlereviews(google_reviews)
 
 '''idem con patatate ci sono diverse operazioni di cleaning importanti da mettere dentro il 
 datacleaner per potere interagire senza errori con postgres'''
-google_reviews = google_reviews.rename(columns={'App':'app','Translated_Review':'translated_review'})
 google_reviews=google_reviews.dropna()
 google_reviews['translated_review'] = google_reviews['translated_review'].astype(str)
 google_reviews=google_reviews[google_reviews['app'].isin(google_data['app'])]
