@@ -144,3 +144,4 @@ class DataIngestor():
         dataframe.to_sql(table, con=engine, if_exists='append', index=False)
         print("Load to postgres success")
        
+#Fare una funzione che prenda i dati dalla tabella su postgres e li metta in una variabile, magari un DF di pandas
