@@ -16,7 +16,7 @@ class DataIngestor():
         elif ext == 'htm' :
             return pd.read_html(filepath)
         elif ext == 'html' :
-            return pd.read_html(filepath)
+            file = pd.read_html(filepath)
         elif ext =='xlsx':
             return pd.read_excel(filepath)
         elif ext == 'pkl':
@@ -123,7 +123,6 @@ class DataIngestor():
             engine = create_engine(f'postgresql://{dbuser}:{dbpass}@{dbhost}:{dbport}/{dbname}') 
             print("Connection sqlalchemy")
             return engine
-        
         except:
             print("Error somewhere")  
            

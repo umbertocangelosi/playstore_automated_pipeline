@@ -15,19 +15,20 @@ dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
 
+# import, clean, and export google_data can be done in one function. need another class? is it worth?
 google_data = di.read_file("./progetto_2/data/raw/googleplaystore.csv")
-google_data = dc.clean_googledb(google_data)
+google_data = dc.clean_google(google_data)
 
 google_reviews = di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
-google_reviews = dc.clean_google_reviews(google_reviews, google_data)
+google_reviews = dc.clean_google_reviews(google_reviews)
 
-# connecting to the database via psycopg2
-conn = di.connect(dbname='postgres', 
-                  dbuser='postgres', 
-                  dbhost='localhost', 
+#creo la connessione al database con psycopg2
+conn = di.connect(dbname='postgres',
+                  dbuser='postgres',
+                  dbhost='localhost',
                   dbport='5432')
 
-# create empty tables
+#creo le tabelle vuote tramite psycopg passando internamente le ddl
 di.create_google(conn)
 di.create_reviews(conn)
 
@@ -37,7 +38,6 @@ engine=di.create_engine(dbname='postgres',
                         dbhost='localhost',
                         dbport='5432')
 
-
-# carico i dati dei dataframe dentro postgress, che fungera' ora da data warehouseb
+#carico i dati dei dataframe dentro postgress, che fungera' ora da data warehouseb
 di.load(google_data,'googleplaystore',engine,replace=True,conn=conn)
 di.load(google_reviews,'google_reviews',engine,replace=True,conn=conn)

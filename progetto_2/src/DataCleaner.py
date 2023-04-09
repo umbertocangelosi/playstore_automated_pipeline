@@ -6,7 +6,7 @@ class DataCleaner:
     def __init__(self):
         pass
     
-    def clean_googledb(self, dataframe):
+    def clean_google(self, dataframe):
 
         print("Cleaning main database")
         dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
@@ -23,6 +23,7 @@ class DataCleaner:
         return dataframe
     
     def clean_google_reviews(self, dataframe, dataframe2):
+        
         print("Cleaning reviews database")
         dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity', 'Sentiment_Subjectivity'], inplace=True)
         dataframe = dataframe.dropna()
