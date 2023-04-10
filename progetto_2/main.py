@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import psycopg2
+from sqlalchemy import create_engine
 
 from src.DataIngestor import DataIngestor
 from src.DataCleaner import DataCleaner
@@ -13,22 +15,29 @@ dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
 
+# import, clean, and export google_data can be done in one function. need another class? is it worth?
 google_data = di.read_file("./progetto_2/data/raw/googleplaystore.csv")
-google_data = dc.clean_googledb(google_data)
-di.save_file(google_data, "./progetto_2/data/output/googleplaystore_cleaned.pkl")
-
-negative = di.read_file('./progetto_2/data/raw/n.xlsx')
-positive = di.read_file('./progetto_2/data/raw/p.xlsx')
-sentiment_words = dc.clean_sentiment_list(positive,negative)
+google_data = dc.clean_google(google_data)
 
 google_reviews = di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
-google_reviews = dc.clean_googlereviews(google_reviews)
-google_reviews = dc.replace_common_strings(google_reviews, 'Translated_Review', sentiment_words)
-di.save_file(google_reviews, './progetto_2/data/output/google_reviews.pkl')
+google_reviews = dc.clean_google_reviews(google_reviews)
 
-google_data = da.assign_sentiment(google_data, google_reviews)
-di.save_file(google_data, './progetto_2/data/output/google_scored.pkl')
-print ('\ngoogle_scored.pkl has been stored successfully\n')
-google_sentiment_data = di.read_file('./progetto_2/data/output/google_scored.pkl')
-print('\n\n\nMAIN PROCESS HAS BEEN COMPLETED\n\n\n')
+#creo la connessione al database con psycopg2
+conn = di.connect(dbname='postgres',
+                  dbuser='postgres',
+                  dbhost='localhost',
+                  dbport='5432')
 
+#creo le tabelle vuote tramite psycopg passando internamente le ddl
+di.create_google(conn)
+di.create_reviews(conn)
+
+# creo una connessione al database compatibile con il metodo db.to_sql(), usando la libreria sqlalchemy
+engine=di.create_engine(dbname='postgres',
+                        dbuser='postgres',
+                        dbhost='localhost',
+                        dbport='5432')
+
+#carico i dati dei dataframe dentro postgress, che fungera' ora da data warehouseb
+di.load(google_data,'googleplaystore',engine,replace=True,conn=conn)
+di.load(google_reviews,'google_reviews',engine,replace=True,conn=conn)
