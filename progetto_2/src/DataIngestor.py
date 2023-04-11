@@ -16,7 +16,7 @@ class DataIngestor():
         elif ext == 'htm' :
             return pd.read_html(filepath)
         elif ext == 'html' :
-            file = pd.read_html(filepath)
+            return pd.read_html(filepath)
         elif ext =='xlsx':
             return pd.read_excel(filepath)
         elif ext == 'pkl':
@@ -63,7 +63,7 @@ class DataIngestor():
     #in psycopg2, tramite il metodo possiamo poi eseguire con execute() una query ddl per creare il database, ho assegnato come chiave primaria
     #il nome delle App. e' necessario fare commit dei cambiamenti effettuati nel rispettivo cursore.
     
-    def create_table_google(self,conn):
+    def create_table_google(self, conn):
 
         cur = conn.cursor()
         
@@ -101,7 +101,7 @@ class DataIngestor():
             CREATE TABLE IF NOT EXISTS google_reviews
         (   
             id SERIAL PRIMARY KEY,
-            app TEXT NOT NULL REFERENCES google_play_store(APP),
+            app TEXT NOT NULL REFERENCES google_play_store(app),
             translated_review TEXT NOT NULL 
 
 
@@ -137,7 +137,7 @@ class DataIngestor():
         if replace:
             cur = pg2.cursor()
             cur.execute("""
-        DROP TABLE IF EXISTS table CASCADE;
+        DROP TABLE IF EXISTS dataframe CASCADE;
         """)
 
         
