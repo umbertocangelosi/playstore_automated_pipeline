@@ -16,6 +16,7 @@ class DataAnalyser:
         data_reviews['score'] = data_reviews['translated_review'].apply(afn.score)
         app_score = data_reviews.groupby(by='app').agg({'score':'mean'}).reset_index()
         dataframe = pd.merge(dataframe, app_score, how='left', on='app')
+        dataframe = dataframe.dropna(subset='score')
         dataframe.name = 'Google Database'
         print(f'\nSentiment has been assigned to {dataframe.name}!\n')
         return dataframe
