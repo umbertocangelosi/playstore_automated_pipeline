@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 class DataIngestor():
     
     def __init__(self):
-        pass
+        self.url = 'postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn'
+
 
     def read_file (self, filepath):
         ext = filepath.split('.')[-1]
@@ -23,7 +24,7 @@ class DataIngestor():
             return pd.read_pickle(filepath)  
         else:
             return '\nfunction not implemented for this type of file yet\n'
-    
+
     def save_file (self, data, filepath):
         ext = filepath.split('.')[-1]
         if ext == 'csv':
@@ -36,25 +37,19 @@ class DataIngestor():
             return data.to_html(filepath, index=False)
         elif ext == 'pkl':
             return data.to_pickle(filepath)
-    
-    def sqlalchemy_connect(self,name,user,host,port):
-        my_pass = input (f'\nInsert {name} password for {user} user: ')
-        try:
-            engine = create_engine(f'postgresql://{user}:{my_pass}@{host}:{port}/{name}') 
-            print("\nConnection sqlalchemy\n")
-            return engine
-        except:
-            print("\nError somewhere\n")  
-    
-    def to_cloud(self, dataframe, name, con, if_exists='fail', index=False):
-        dataframe.to_sql(name=name, con=con, if_exists=if_exists, index=index)
+
+    def to_cloud(self, dataframe, to_table, if_exists='fail', index=False):
+        # dataframe : what we are pushing
+        # to_table : table we are pushing to
+        engine = create_engine(url=self.url)
+        con = engine.connect()
+        dataframe.to_sql(name=to_table, con=con, if_exists=if_exists, index=index)
         print(f"\n{dataframe} has been successfully uploaded!\n")
 
     def from_cloud(self, table):
 
-        url = 'postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn'
-        alchemy_engine = create_engine(url=url)
-        connection = alchemy_engine.connect()
-        table = pd.read_sql(f'select * from "{table}"', connection)
+        engine = create_engine(url=self.url)
+        con = engine.connect()
+        table = pd.read_sql(f'select * from "{table}"', con)
         print(f'{table} has been loaded from our database online')
         return table
