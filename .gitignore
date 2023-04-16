@@ -1,12 +1,9 @@
-progetto_2/analisi/sprint5/src/DataCleaner.py
-progetto_2/analisi/sprint5/src/DataIngestor.py
-progetto_2/analisi/sprint5/src/__pycache__/DataCleaner.cpython-311.pyc
-progetto_2/analisi/sprint5/src/__pycache__/DataIngestor.cpython-311.pyc
+progetto_2/analisi
 split3.pkl
 split2.pkl
 split1.pkl
 split0.pkl
 progetto_2/alessio-spagnolo-5.py
 progetto_2/AlePickle.ipynb
-progetto_2/src/__pycache__/DataCleaner.cpython-311.pyc
-progetto_2/src/__pycache__/DataIngestor.cpython-311.pyc
+progetto_2/main.py
+prova2.py

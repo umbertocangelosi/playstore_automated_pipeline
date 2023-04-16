@@ -9,7 +9,7 @@ class DataCleaner:
     def clean_google(self, dataframe):
 
         print("Cleaning main database")
-        dataframe.drop(columns=['Current Ver', 'Android Ver'], inplace=True)
+        dataframe.drop(columns=['Current Ver', 'Android Ver', 'Last Updated'], inplace=True)
         self.column_to_number(dataframe, 'Installs')
         self.column_to_number(dataframe, 'Size')
         self.column_to_number(dataframe, 'Reviews')

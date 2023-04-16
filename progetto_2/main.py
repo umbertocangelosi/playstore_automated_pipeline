@@ -22,19 +22,13 @@ google_data = dc.clean_google(google_data)
 google_reviews = di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
 google_reviews = dc.clean_google_reviews(google_reviews, google_data)
 
-#creo la connessione al database con psycopg2
-pg2_connection = di.pg2_connect(dbname='postgres',
-                                dbuser='postgres',
-                                dbhost='localhost',
-                                dbport='5432')
+dbh.create_google()
+dbh.create_reviews()
 
-#creo le tabelle vuote tramite psycopg passando internamente le ddl
-di.create_table_google(pg2_connection)
-di.create_table_reviews(pg2_connection)
-
-# creo una connessione al database compatibile con il metodo db.to_sql(), usando la libreria sqlalchemy
-sqlalchemy_connection = di.sqlalchemy_connect(name='postgres',user='postgres',host='localhost',port='5432')
 
 #carico i dati dei dataframe dentro postgress, che fungera' ora da data warehouseb
-di.export_to_sql(google_data, 'google_play_store', con=sqlalchemy_connection, replace=True, pg2=pg2_connection)
-di.export_to_sql(google_reviews, 'google_reviews', con=sqlalchemy_connection, replace=True, pg2=pg2_connection)
+di.to_cloud(google_data, 'google_play_store')
+di.to_cloud(google_reviews, 'google_reviews')
+
+google_data = da.assign_sentiment(google_data, google_reviews)
+
