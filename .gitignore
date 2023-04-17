@@ -7,3 +7,12 @@ progetto_2/alessio-spagnolo-5.py
 progetto_2/AlePickle.ipynb
 progetto_2/main.py
 prova2.py
+progetto_2/airflow.cfg
+progetto_2/airflow.db
+progetto_2/webserver_config.py
+progetto_2/logs
+progetto_2/airflow-webserver.pid
+progetto_2/standalone_admin_password.txt
+progetto_2/dags/__pycache__
+progetto_2/dags/src/__pycache__
+airvenv/
