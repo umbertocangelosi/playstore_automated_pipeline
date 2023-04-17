@@ -2,6 +2,8 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
+import sys
+sys.path.append('/mnt/c/Users/Alessio/Desktop/Team/progetto_2')
 
 from src.DataIngestor import DataIngestor
 from src.DataCleaner import DataCleaner
@@ -13,10 +15,7 @@ di = DataIngestor()
 dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
-dbh = DbHandler()
-
-my_engine = create_engine(f'postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
-
+dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
 
 default_dag_args = {
     'start_date': datetime(2023, 4, 15),
@@ -31,7 +30,7 @@ def function_1(**context):
 
     print('start function_1')
     # import dataframe
-    google_data = di.read_file("./progetto_2/data/raw/googleplaystore.csv")
+    google_data = di.read_file('c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore.csv')
     # save dataframe using XCom
     context['ti'].xcom_push(key='google', value=google_data)
     print('function_1 done')
@@ -51,7 +50,7 @@ def function_3(**context):
 
     print('start function_3')
     # import dataframe
-    google_reviews = di.read_file('./progetto_2/data/raw/googleplaystore_user_reviews.csv')
+    google_reviews = di.read_file('c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore_user_reviews.csv')
     # save dataframe using XCom
     context['ti'].xcom_push(key='reviews', value=google_reviews)
     print('function_3 done')
@@ -70,17 +69,10 @@ def function_4(**context):
 
 def function_5():
     print('start function_5')
-    dbh.create_table_google(engine=my_engine)
+    dbh.create_everything()
     print('function_5 done')
-
-
-def function_6():
-    print('start function_6')
-    dbh.create_table_reviews(engine=my_engine)
-    print('function_6 done')
     
 def function_7(**context):
-
     print('start function_7')
     # save app dataframe on database
     google_data = context['ti'].xcom_pull(key='google')
@@ -103,11 +95,6 @@ def function_9(**context):
     google_data = da.assign_sentiment(google_data, google_reviews)
     context['ti'].xcom_push(key='google_data', value=google_data)
     print('function_9 done')
-
-def function_10():
-    print('start function_10')
-    # dbh.create_table_reviews(engine=my_engine)
-    print('function_10 done')
 
 def function_11(**context):
 
@@ -137,13 +124,9 @@ with DAG('etl_main', default_args=default_dag_args, schedule_interval=None) as d
                             python_callable=function_4,
                             provide_context=True)
     
-    task_5 = PythonOperator(task_id='task_5',
-                            python_callable=function_5,
-                            provide_context=False)
-    
-    task_6 = PythonOperator(task_id='task_6',
-                            python_callable=function_6,
-                            provide_context=False)
+    # task_5 = PythonOperator(task_id='task_5',
+    #                         python_callable=function_5,
+    #                         provide_context=True)
     
     task_7 = PythonOperator(task_id='task_7',
                             python_callable=function_7,
@@ -153,17 +136,14 @@ with DAG('etl_main', default_args=default_dag_args, schedule_interval=None) as d
                             python_callable=function_8,
                             provide_context=True)
     
-    # task_9 = PythonOperator(task_id='task_9',
-    #                         python_callable=function_9,
-    #                         provide_context=True)
+    task_9 = PythonOperator(task_id='task_9',
+                            python_callable=function_9,
+                            provide_context=True)
     
-    task_10 = PythonOperator(task_id='task_10',
-                             python_callable=function_10,
-                             provide_context=False)
-    
-    # task_11 = PythonOperator(task_id='task_11',
-    #                          python_callable=function_11,
-    #                          provide_context=True)
+    task_11 = PythonOperator(task_id='task_11',
+                             python_callable=function_11,
+                             provide_context=True)
 
 # Define the task dependencies
-[task_5, task_6, task_10] >> [task_1, task_3] >> task_2 >> task_4 >> task_7 >> task_8 # >> task_9 >> task_11
+# task_5 >> 
+task_1 >> task_3 >> task_2 >> task_4 >> task_7 >> task_8 >> task_9 >> task_11
