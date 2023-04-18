@@ -63,5 +63,4 @@ class DbHandler():
         self.create_table_google()
         self.create_table_reviews()
         self.create_score()
-        print('SIAMO ALLA FINE')
         self.metadata.create_all()
