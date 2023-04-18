@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
+import pandas as pd
 import sys
 sys.path.append('/mnt/c/Users/Alessio/Desktop/Team/progetto_2')
 
@@ -29,10 +30,13 @@ default_dag_args = {
 def function_1(**context):
 
     print('start function_1')
-    # import dataframe
-    google_data = di.read_file('c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore.csv')
+    context['ti'].xcom_delete(key='reviews')
+    context['ti'].xcom_delete(key='google_data')
+    context['ti'].xcom_delete(key='google')
+    # import dataframe 
+    google_data = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore.csv')
     # save dataframe using XCom
-    context['ti'].xcom_push(key='google', value=google_data)
+    context['ti'].xcom_push(key='google', value=google_data.to_dict(orient='records'))
     print('function_1 done')
 
 def function_2(**context):
@@ -40,19 +44,20 @@ def function_2(**context):
     print('start function_2')
     # getting dataframe from Context
     google_data = context['ti'].xcom_pull(key='google')
+    google_data = pd.DataFrame.from_dict(google_data)
     # cleaning dataframe using DataCleaner Class
     google_data = dc.clean_google(google_data)
     # save dataframe using XCom
-    context['ti'].xcom_push(key='google', value=google_data)
+    context['ti'].xcom_push(key='google', value=google_data.to_dict(orient='records'))
     print('function_2 done')
 
 def function_3(**context):
 
     print('start function_3')
     # import dataframe
-    google_reviews = di.read_file('c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore_user_reviews.csv')
+    google_reviews = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore_user_reviews.csv')
     # save dataframe using XCom
-    context['ti'].xcom_push(key='reviews', value=google_reviews)
+    context['ti'].xcom_push(key='reviews', value=google_reviews.to_dict(orient='records'))
     print('function_3 done')
 
 def function_4(**context):
@@ -60,11 +65,13 @@ def function_4(**context):
     print('start function_4')
     # getting dataframe from Context
     google_data = context['ti'].xcom_pull(key='google')
+    google_data = pd.DataFrame.from_dict(google_data)
     google_reviews = context['ti'].xcom_pull(key='reviews')
+    google_reviews = pd.DataFrame.from_dict(google_reviews)
     # cleaning dataframe using DataCleaner Class
     google_reviews = dc.clean_google_reviews(google_reviews, google_data)
     # save dataframe using XCom
-    context['ti'].xcom_push(key='reviews', value=google_reviews)
+    context['ti'].xcom_push(key='reviews', value=google_reviews.to_dict(orient='records'))
     print('function_4 done')
 
 def function_5():
@@ -76,6 +83,9 @@ def function_7(**context):
     print('start function_7')
     # save app dataframe on database
     google_data = context['ti'].xcom_pull(key='google')
+    print('DIZIONARIO PULLATO')
+    google_data = pd.DataFrame.from_dict(google_data)
+    print('DIZIONARIO TRASFORMATO IN DATAFRAME')
     di.to_cloud(google_data, to_table='google_play_store', if_exists='fail', index=False)
     print('function_7 done')
 
@@ -83,6 +93,7 @@ def function_8(**context):
     print('start function_8')
     # save review dataframe on database
     google_reviews = context['ti'].xcom_pull(key='reviews')
+    google_reviews = pd.DataFrame.from_dict(google_reviews)
     di.to_cloud(google_reviews, to_table='google_reviews', if_exists='fail', index=False)
     print('function_8 done')
     
@@ -90,16 +101,19 @@ def function_9(**context):
     print('start function_9')
     # getting app and reviews dataframe
     google_data = context['ti'].xcom_pull(key='google')
+    google_data = pd.DataFrame.from_dict(google_data)
     google_reviews = context['ti'].xcom_pull(key='reviews')
+    google_reviews = pd.DataFrame.from_dict(google_reviews)
     # running analysis
     google_data = da.assign_sentiment(google_data, google_reviews)
-    context['ti'].xcom_push(key='google_data', value=google_data)
+    context['ti'].xcom_push(key='google_data', value=google_data.to_dict(orient='records'))
     print('function_9 done')
 
 def function_11(**context):
 
     print('start function_11')
     google_data = context['ti'].xcom_pull(key='google_data')
+    google_data = pd.DataFrame.from_dict(google_data)
     di.to_cloud(google_data, to_table='google_score', if_exists='fail', index=False)
     print('function_11 done')
 
