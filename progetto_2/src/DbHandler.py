@@ -8,10 +8,10 @@ class DbHandler():
         '''
         Constructor for the DbHandler class
         
-        Argomenti:
+        Args:
         - url: a string representing the URL for connecting to the database
         
-        Creates an engine object to connect to the database and a metadata object to manage Table objects.
+        Creates an engine, connection and metadata object based on the url given
         '''
         self.engine = create_engine(url)
         self.metadata = MetaData(bind=self.engine)
@@ -19,7 +19,7 @@ class DbHandler():
 
     def create_table_google(self):
         '''
-        Creates a table if doesn't exist in the database
+        Creates google app table in the database
         '''
         google_play_store = Table(
             'store', 
