@@ -36,19 +36,3 @@ class DataIngestor():
             return data.to_html(filepath, index=False)
         elif ext == 'pkl':
             return data.to_pickle(filepath)
-
-    def to_cloud(self, dataframe, to_table, if_exists='fail', index=False):
-        # dataframe : what we are pushing
-        # to_table : table we are pushing to
-        engine = create_engine(url=self.url)
-        con = engine.connect()
-        dataframe.to_sql(name=to_table, con=con, if_exists=if_exists, index=index)
-        print(f"\n{dataframe} has been successfully uploaded!\n")
-
-    def from_cloud(self, table):
-
-        engine = create_engine(url=self.url)
-        con = engine.connect()
-        table = pd.read_sql(f'select * from "{table}"', con)
-        print(f'{table} has been loaded from our database online')
-        return table

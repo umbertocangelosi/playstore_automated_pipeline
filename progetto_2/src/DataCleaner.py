@@ -84,4 +84,3 @@ class DataCleaner:
         for col in dataframe:
             dataframe[col] = dataframe[col].apply(lambda x: x.lower() if type(x) == str else x)
         return dataframe
-    

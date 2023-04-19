@@ -16,7 +16,8 @@ di = DataIngestor()
 dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
-dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
+dbh = DbHandler('postgresql://postgres:postgres@localhost:5432/postgres')
+# dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
 
 default_dag_args = {
     'start_date': datetime(2023, 4, 15),
@@ -27,21 +28,15 @@ default_dag_args = {
     'project_id': 1
 }
 
-def function_1(**context):
+def import_app(**context):
 
-    print('start function_1')
-    context['ti'].xcom_delete(key='reviews')
-    context['ti'].xcom_delete(key='google_data')
-    context['ti'].xcom_delete(key='google')
     # import dataframe 
     google_data = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore.csv')
     # save dataframe using XCom
     context['ti'].xcom_push(key='google', value=google_data.to_dict(orient='records'))
-    print('function_1 done')
 
-def function_2(**context):
+def clean_app(**context):
 
-    print('start function_2')
     # getting dataframe from Context
     google_data = context['ti'].xcom_pull(key='google')
     google_data = pd.DataFrame.from_dict(google_data)
@@ -49,20 +44,16 @@ def function_2(**context):
     google_data = dc.clean_google(google_data)
     # save dataframe using XCom
     context['ti'].xcom_push(key='google', value=google_data.to_dict(orient='records'))
-    print('function_2 done')
 
-def function_3(**context):
+def import_review(**context):
 
-    print('start function_3')
     # import dataframe
     google_reviews = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore_user_reviews.csv')
     # save dataframe using XCom
     context['ti'].xcom_push(key='reviews', value=google_reviews.to_dict(orient='records'))
-    print('function_3 done')
 
-def function_4(**context):
+def clean_review(**context):
 
-    print('start function_4')
     # getting dataframe from Context
     google_data = context['ti'].xcom_pull(key='google')
     google_data = pd.DataFrame.from_dict(google_data)
@@ -72,92 +63,78 @@ def function_4(**context):
     google_reviews = dc.clean_google_reviews(google_reviews, google_data)
     # save dataframe using XCom
     context['ti'].xcom_push(key='reviews', value=google_reviews.to_dict(orient='records'))
-    print('function_4 done')
 
-def function_5():
-    print('start function_5')
-    dbh.create_everything()
-    print('function_5 done')
+def create_tabs():
+    dbh.create_tables()
     
-def function_7(**context):
-    print('start function_7')
+def export_app(**context):
     # save app dataframe on database
     google_data = context['ti'].xcom_pull(key='google')
-    print('DIZIONARIO PULLATO')
     google_data = pd.DataFrame.from_dict(google_data)
-    print('DIZIONARIO TRASFORMATO IN DATAFRAME')
-    di.to_cloud(google_data, to_table='google_play_store', if_exists='fail', index=False)
-    print('function_7 done')
+    dbh.to_cloud(google_data, to_table='store')
 
-def function_8(**context):
-    print('start function_8')
+def export_review(**context):
     # save review dataframe on database
     google_reviews = context['ti'].xcom_pull(key='reviews')
     google_reviews = pd.DataFrame.from_dict(google_reviews)
-    di.to_cloud(google_reviews, to_table='google_reviews', if_exists='fail', index=False)
-    print('function_8 done')
+    dbh.to_cloud(google_reviews, to_table='review')
     
-def function_9(**context):
-    print('start function_9')
+def analysis(**context):
     # getting app and reviews dataframe
     google_data = context['ti'].xcom_pull(key='google')
     google_data = pd.DataFrame.from_dict(google_data)
     google_reviews = context['ti'].xcom_pull(key='reviews')
     google_reviews = pd.DataFrame.from_dict(google_reviews)
     # running analysis
-    google_data = da.assign_sentiment(google_data, google_reviews)
-    context['ti'].xcom_push(key='google_data', value=google_data.to_dict(orient='records'))
-    print('function_9 done')
+    sentiment = da.assign_sentiment(google_data, google_reviews)
+    context['ti'].xcom_push(key='analysis', value=sentiment.to_dict(orient='records'))
 
-def function_11(**context):
+def export_analysis(**context):
 
-    print('start function_11')
-    google_data = context['ti'].xcom_pull(key='google_data')
-    google_data = pd.DataFrame.from_dict(google_data)
-    di.to_cloud(google_data, to_table='google_score', if_exists='fail', index=False)
-    print('function_11 done')
+    sentiment = context['ti'].xcom_pull(key='analysis')
+    sentiment = pd.DataFrame.from_dict(sentiment)
+    dbh.to_cloud(sentiment, to_table='score')
 
 # Define the DAG
 
 with DAG('etl_main', default_args=default_dag_args, schedule_interval=None) as dag:
 
 # Define the operators
-    task_1 = PythonOperator(task_id='task_1',
-                            python_callable=function_1,
+    import_app_task = PythonOperator(task_id='import_app_task',
+                            python_callable=import_app,
                             provide_context=True)
     
-    task_2 = PythonOperator(task_id='task_2',
-                            python_callable=function_2,
+    clean_app_task = PythonOperator(task_id='clean_app_task',
+                            python_callable=clean_app,
                             provide_context=True)
     
-    task_3 = PythonOperator(task_id='task_3',
-                            python_callable=function_3,
+    import_review_task = PythonOperator(task_id='import_reviews_task',
+                            python_callable=import_review,
                             provide_context=True)
     
-    task_4 = PythonOperator(task_id='task_4',
-                            python_callable=function_4,
+    clean_review_task = PythonOperator(task_id='clean_review_task',
+                            python_callable=clean_review,
                             provide_context=True)
     
-    # task_5 = PythonOperator(task_id='task_5',
-    #                         python_callable=function_5,
-    #                         provide_context=True)
-    
-    task_7 = PythonOperator(task_id='task_7',
-                            python_callable=function_7,
+    create_tabs_task = PythonOperator(task_id='create_tabs_task',
+                            python_callable=create_tabs,
                             provide_context=True)
     
-    task_8 = PythonOperator(task_id='task_8',
-                            python_callable=function_8,
+    export_app_task = PythonOperator(task_id='export_app_task',
+                            python_callable=export_app,
                             provide_context=True)
     
-    task_9 = PythonOperator(task_id='task_9',
-                            python_callable=function_9,
+    export_review_task = PythonOperator(task_id='export_review_task',
+                            python_callable=export_review,
                             provide_context=True)
     
-    task_11 = PythonOperator(task_id='task_11',
-                             python_callable=function_11,
+    analysis_task = PythonOperator(task_id='analysis_task',
+                            python_callable=analysis,
+                            provide_context=True)
+    
+    export_analysis_task = PythonOperator(task_id='export_analysis_task',
+                             python_callable=export_analysis,
                              provide_context=True)
 
 # Define the task dependencies
-# task_5 >> 
-task_1 >> task_3 >> task_2 >> task_4 >> task_7 >> task_8 >> task_9 >> task_11
+create_tabs_task >> import_app_task >> import_review_task >> clean_app_task >> clean_review_task >> export_app_task >> export_review_task >> analysis_task >> export_analysis_task
