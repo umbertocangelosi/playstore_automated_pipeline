@@ -54,7 +54,7 @@ class DbHandler():
         score = Table(
             'score', 
             self.metadata,
-            Column('app', String(255), ForeignKey("store.app"), nullable=False),
+            Column('app', String(255), ForeignKey("store.app"), primary_key=True, nullable=False),
             Column('score', Float(), nullable=False),
         )
         print("Table review created!")
@@ -62,9 +62,9 @@ class DbHandler():
     def create_tables(self):
         if self.connection.dialect.has_table(connection=self.connection, table_name='store'):
             print('\nDeleting all the tables\n')
-        self.connection.execute('DROP TABLE if exists store CASCADE')
-        self.connection.execute('DROP TABLE if exists review CASCADE')
-        self.connection.execute('DROP TABLE if exists score CASCADE')
+            self.connection.execute('DROP TABLE if exists store CASCADE')
+            self.connection.execute('DROP TABLE if exists review CASCADE')
+            self.connection.execute('DROP TABLE if exists score CASCADE')
         self.create_table_google()
         self.create_table_reviews()
         self.create_score()

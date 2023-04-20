@@ -16,8 +16,8 @@ di = DataIngestor()
 dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
-dbh = DbHandler('postgresql://postgres:postgres@localhost:5432/postgres')
-# dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
+#dbh = DbHandler('postgresql://postgres:postgres@localhost:5432/postgres')
+dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
 
 default_dag_args = {
     'start_date': datetime(2023, 4, 15),

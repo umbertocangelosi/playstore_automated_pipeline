@@ -11,11 +11,11 @@ afn = Afinn()
 class DataVisualizer:
     def __init__(self):
         sns.set()
-
+# DA METTERE COLONNE IN LOWER
     # Top 5 Apps with smallest size and highest downloads
     # just select the dataframe
     # if app and installs columns were renamed, then use new names as parameters of column 1&2
-    def top_smallest(self, dataframe, column1='App', column2='Rating', library='sns', quantity=5):
+    def top_smallest(self, dataframe, column1='app', column2='rating', library='sns', quantity=5):
         dataframe = dataframe.sort_values(by=['Size','Installs','Rating'], ascending=[True,False,False]).head(quantity)
         if library == 'plt':
             plt.bar(dataframe[column1], 
