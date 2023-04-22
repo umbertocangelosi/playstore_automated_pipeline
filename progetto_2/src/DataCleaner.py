@@ -70,7 +70,7 @@ class DataCleaner:
         """
         print("Cleaning good and bad database")
         negative = lista_n.values.tolist()
-        positive = lista_p.values.tolist()        
+        positive = lista_p.values.tolist()
         lista_appiattita_p = list(itertools.chain.from_iterable(positive))
         lista_appiattita_n = list(itertools.chain.from_iterable(negative))
         lista = lista_appiattita_n + lista_appiattita_p
@@ -95,7 +95,7 @@ class DataCleaner:
 
     def column_to_number(self,dataframe,column):
         """
-        Converts the values in the specified column of the given dataframe to numeric 
+        Converts the values in the specified column of the given dataframe to numeric
         format by replacing unit abbreviations with their corresponding number of zeros.
 
         Args:

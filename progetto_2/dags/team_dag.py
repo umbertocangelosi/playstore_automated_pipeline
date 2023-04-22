@@ -16,8 +16,8 @@ di = DataIngestor()
 dc = DataCleaner()
 da = DataAnalyser()
 dv = DataVisualizer()
-#dbh = DbHandler('postgresql://postgres:postgres@localhost:5432/postgres')
-dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
+dbh = DbHandler('postgresql://postgres:postgres@localhost:5432/postgres')
+#dbh = DbHandler('postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn')
 
 default_dag_args = {
     'start_date': datetime(2023, 4, 15),
@@ -59,10 +59,16 @@ def clean_review(**context):
     google_data = pd.DataFrame.from_dict(google_data)
     google_reviews = context['ti'].xcom_pull(key='reviews')
     google_reviews = pd.DataFrame.from_dict(google_reviews)
+    positive = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/p.xlsx')
+    negative = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/n.xlsx')
+    final_list = dc.clean_sentiment_list(positive,negative)
     # cleaning dataframe using DataCleaner Class
     google_reviews = dc.clean_google_reviews(google_reviews, google_data)
+    analysed_review = dc.replace_common_strings(google_reviews,'translated_review',final_list)
     # save dataframe using XCom
     context['ti'].xcom_push(key='reviews', value=google_reviews.to_dict(orient='records'))
+    context['ti'].xcom_push(key='analysed_review', value=analysed_review.to_dict(orient='records'))
+
 
 def create_tabs():
     dbh.create_tables()
@@ -78,15 +84,15 @@ def export_review(**context):
     google_reviews = context['ti'].xcom_pull(key='reviews')
     google_reviews = pd.DataFrame.from_dict(google_reviews)
     dbh.to_cloud(google_reviews, to_table='review')
-    
+   
 def analysis(**context):
     # getting app and reviews dataframe
     google_data = context['ti'].xcom_pull(key='google')
     google_data = pd.DataFrame.from_dict(google_data)
-    google_reviews = context['ti'].xcom_pull(key='reviews')
-    google_reviews = pd.DataFrame.from_dict(google_reviews)
+    analysed_review = context['ti'].xcom_pull(key='analysed_review')
+    analysed_review = pd.DataFrame.from_dict(analysed_review)
     # running analysis
-    sentiment = da.assign_sentiment(google_data, google_reviews)
+    sentiment = da.assign_sentiment(google_data, analysed_review)
     context['ti'].xcom_push(key='analysis', value=sentiment.to_dict(orient='records'))
 
 def export_analysis(**context):
