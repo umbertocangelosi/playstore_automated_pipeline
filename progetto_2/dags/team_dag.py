@@ -137,4 +137,6 @@ with DAG('etl_main', default_args=default_dag_args, schedule_interval=None) as d
                              provide_context=True)
 
 # Define the task dependencies
-create_tabs_task >> import_app_task >> import_review_task >> clean_app_task >> clean_review_task >> export_app_task >> export_review_task >> analysis_task >> export_analysis_task
+create_tabs_task >> import_app_task >> import_review_task >> \
+clean_app_task >> clean_review_task >> export_app_task >> export_review_task >> \
+analysis_task >> export_analysis_task

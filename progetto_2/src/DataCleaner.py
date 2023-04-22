@@ -9,7 +9,7 @@ class DataCleaner:
     
     def clean_google(self, dataframe):
         """
-        Clean the main Google Play Store database.
+        Cleans main Google Play Store database.
 
         Args:
         - dataframe (pandas DataFrame): The raw database to be cleaned.
@@ -34,16 +34,16 @@ class DataCleaner:
 
     def clean_google_reviews(self, dataframe, dataframe2):
         """
-        This function cleans a dataframe containing Google Play Store reviews. It drops columns that are not necessary,
+        Cleans a dataframe containing Google Play Store reviews. It drops columns that are not necessary,
         removes rows with missing data, converts column names to lower case, filters the dataframe to include only
-        reviews for apps that are in another dataframe, and returns the cleaned dataframe.
+        reviews for apps that are in review dataframe, and returns the cleaned dataframe.
     
         Args:
-            dataframe (pandas DataFrame): The dataframe containing the Google Play Store reviews to be cleaned.
-            dataframe2 (pandas DataFrame): The dataframe containing the list of apps to include in the cleaned dataframe.
+        - dataframe (pandas DataFrame): The dataframe containing the Google Play Store reviews to be cleaned.
+        - dataframe2 (pandas DataFrame): The dataframe containing the list of apps to include in the cleaned dataframe.
         
         Returns:
-            dataframe (pandas DataFrame): The cleaned dataframe.
+        - dataframe (pandas DataFrame): The cleaned dataframe.
         """
         print("Cleaning reviews database")
         dataframe.drop(columns=['Sentiment', 'Sentiment_Polarity', 'Sentiment_Subjectivity'], inplace=True)
@@ -58,15 +58,15 @@ class DataCleaner:
 
     def clean_sentiment_list(self, lista_p, lista_n):
         """
-        This function takes two lists containing positive and negative words respectively, flattens them, and combines
+        Take two lists containing positive and negative words respectively, flattens them, and combines
         them into a single list.
 
         Args:
-            lista_p (list): A list of positive words.
-            lista_n (list): A list of negative words.
+        - lista_p (list): A list of positive words.
+        - lista_n (list): A list of negative words.
 
         Returns:
-            list: A list containing all the words from both the positive and negative lists.
+        - list: A list containing all the words from both the positive and negative lists.
         """
         print("Cleaning good and bad database")
         negative = lista_n.values.tolist()
@@ -79,7 +79,7 @@ class DataCleaner:
 
     def replace_common_strings(self, dataframe, col_name, string_list):
         """
-        Replaces all strings in the given list that appear in the specified column of the given dataframe with a single space.
+        Replaces the value of the specified column of the given dataframe with matching words between the column and the given list.
 
         Args:
         - dataframe: a dataframe containing the column to be modified
@@ -95,7 +95,8 @@ class DataCleaner:
 
     def column_to_number(self,dataframe,column):
         """
-        Converts the values in the specified column of the given dataframe to numeric format by replacing unit abbreviations with their corresponding number of zeros.
+        Converts the values in the specified column of the given dataframe to numeric 
+        format by replacing unit abbreviations with their corresponding number of zeros.
 
         Args:
         - dataframe: a dataframe containing the column to be converted
