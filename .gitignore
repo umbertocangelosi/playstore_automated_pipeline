@@ -18,3 +18,4 @@ progetto_2/dags/src/__pycache__
 airvenv/
 progetto_2/prova2.py
 progetto_2/documents
+progetto_2/dags/usda.py
