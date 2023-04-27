@@ -23,7 +23,7 @@ default_dag_args = {
     'start_date': datetime(2023, 4, 15),
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
+    'retries': 0,
     'retry_delay': timedelta(minutes=5),
     'project_id': 1
 }
