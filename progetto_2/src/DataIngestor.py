@@ -23,10 +23,6 @@ class DataIngestor():
             return pd.read_csv(filepath)
         elif ext == 'json':
             return pd.read_json(filepath)
-        elif ext == 'htm' :
-            return pd.read_html(filepath)
-        elif ext == 'html' :
-            return pd.read_html(filepath)
         elif ext =='xlsx':
             return pd.read_excel(filepath)
         elif ext == 'pkl':
@@ -48,11 +44,5 @@ class DataIngestor():
         ext = filepath.split('.')[-1]
         if ext == 'csv':
             return data.to_csv(filepath, index=False)
-        elif ext == 'json':
-            return data.to_json(filepath, index=False)
-        elif ext == 'htm' :
-            return data.to_html(filepath, index=False)
-        elif ext == 'html' :
-            return data.to_html(filepath, index=False)
         elif ext == 'pkl':
             return data.to_pickle(filepath)

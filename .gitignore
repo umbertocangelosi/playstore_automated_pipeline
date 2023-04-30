@@ -19,3 +19,6 @@ airvenv/
 progetto_2/prova2.py
 progetto_2/documents
 progetto_2/dags/usda.py
+progetto_2/data/output/analysis.csv
+progetto_2/data/output/google_cleaned.csv
+progetto_2/data/output/reviews_cleaned.csv

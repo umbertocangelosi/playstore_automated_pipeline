@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 import pandas as pd
 import sys
+import os
+
 sys.path.append('/mnt/c/Users/Alessio/Desktop/Team/progetto_2')
 
 from src.DataIngestor import DataIngestor
@@ -29,9 +31,9 @@ default_dag_args = {
 }
 
 def import_app(**context):
-
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'googleplaystore.csv')
     # import dataframe 
-    google_data = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore.csv')
+    google_data = di.read_file(path)
     # save dataframe using XCom
     context['ti'].xcom_push(key='google', value=google_data.to_dict(orient='records'))
 
@@ -47,20 +49,22 @@ def clean_app(**context):
 
 def import_review(**context):
 
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'googleplaystore_user_reviews.csv')
     # import dataframe
-    google_reviews = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/googleplaystore_user_reviews.csv')
+    google_reviews = di.read_file(path)
     # save dataframe using XCom
     context['ti'].xcom_push(key='reviews', value=google_reviews.to_dict(orient='records'))
 
 def clean_review(**context):
-
+    path_p = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'p.xlsx')
+    path_n = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'n.xlsx')
     # getting dataframe from Context
     google_data = context['ti'].xcom_pull(key='google')
     google_data = pd.DataFrame.from_dict(google_data)
     google_reviews = context['ti'].xcom_pull(key='reviews')
     google_reviews = pd.DataFrame.from_dict(google_reviews)
-    positive = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/p.xlsx')
-    negative = di.read_file('/mnt/c/Users/Alessio/Desktop/Team/progetto_2/data/raw/n.xlsx')
+    positive = di.read_file(path_p)
+    negative = di.read_file(path_n)
     final_list = dc.clean_sentiment_list(positive,negative)
     # cleaning dataframe using DataCleaner Class
     google_reviews = dc.clean_google_reviews(google_reviews, google_data)
@@ -78,12 +82,16 @@ def export_app(**context):
     google_data = context['ti'].xcom_pull(key='google')
     google_data = pd.DataFrame.from_dict(google_data)
     dbh.to_cloud(google_data, to_table='store')
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'output', 'google_cleaned.csv')
+    di.save_file(google_data, path)
 
 def export_review(**context):
     # save review dataframe on database
     google_reviews = context['ti'].xcom_pull(key='reviews')
     google_reviews = pd.DataFrame.from_dict(google_reviews)
     dbh.to_cloud(google_reviews, to_table='review')
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'output', 'reviews_cleaned.csv')
+    di.save_file(google_reviews, path)
    
 def analysis(**context):
     # getting app and reviews dataframe
@@ -100,6 +108,8 @@ def export_analysis(**context):
     sentiment = context['ti'].xcom_pull(key='analysis')
     sentiment = pd.DataFrame.from_dict(sentiment)
     dbh.to_cloud(sentiment, to_table='score')
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'output', 'analysis.csv')
+    di.save_file(sentiment, path)
 
 # Define the DAG
 
