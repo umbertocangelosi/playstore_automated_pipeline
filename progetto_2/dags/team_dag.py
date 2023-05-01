@@ -6,7 +6,8 @@ import pandas as pd
 import sys
 import os
 
-sys.path.append('/mnt/c/Users/Alessio/Desktop/Team/progetto_2')
+syspath = os.path.join(os.path.dirname(__file__), '..')
+sys.path.append(syspath)
 
 from src.DataIngestor import DataIngestor
 from src.DataCleaner import DataCleaner
