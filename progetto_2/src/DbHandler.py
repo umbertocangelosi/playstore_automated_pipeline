@@ -20,13 +20,8 @@ class DbHandler():
         self.Session.close_all()
         #self.connection = self.engine.connect()
 
-
-
-    
-            
-
-
     def create_table_google(self):
+
         with self.Session():
             table_name = 'google_play_store'
             existing_table = Table(table_name, self.metadata)
@@ -37,7 +32,7 @@ class DbHandler():
         '''
         with self.Session():
             google_play_store = Table(
-                'google_play_store1', 
+                'google_play_store', 
                 self.metadata,
                 Column('app', String(255), primary_key=True, nullable=False),
                 Column('category', String(255), nullable=False),
@@ -54,36 +49,36 @@ class DbHandler():
             )
             print("Table google_play_store created!")
         
-        
         self.metadata.create_all(bind=self.engine)
 
 
     def create_table_reviews(self):
-
-        google_reviews = Table(
-            'google_reviews', 
-            self.metadata,
-            Column('id', Integer(), autoincrement=True, primary_key=True),
-            Column('app', String(255), ForeignKey("google_play_store.app"), nullable=False),
-            Column('translated_review', String(255), nullable=False),
-        )
-        self.metadata.create_all(bind=self.engine)
-        print("Table google_reviews created!")
+        with self.Session():
+            google_reviews = Table(
+                'google_reviews', 
+                self.metadata,
+                Column('id', Integer(), autoincrement=True, primary_key=True),
+                Column('app', String(255), ForeignKey("google_play_store.app"), nullable=False),
+                Column('translated_review', String(255), nullable=False),
+            )
+            self.metadata.create_all(bind=self.engine)
+            print("Table google_reviews created!")
 
     def create_score(self):
+        with self.Session():
 
-        score = Table(
-            'google_score', 
-            self.metadata,
-            Column('app', String(255), ForeignKey("google_play_store.app"), nullable=False),
-            Column('score', Float(), nullable=False),
-        )
-        self.metadata.create_all()
-        print("Table google_reviews created!")
+            score = Table(
+                'google_score', 
+                self.metadata,
+                Column('app', String(255), ForeignKey("google_play_store.app"), nullable=False),
+                Column('score', Float(), nullable=False),
+            )
+            self.metadata.create_all()
+            print("Table google_reviews created!")
 
     def create_everything(self):
 
         self.create_table_google()
         self.create_table_reviews()
         self.create_score()
-        self.metadata.create_all()
+        
