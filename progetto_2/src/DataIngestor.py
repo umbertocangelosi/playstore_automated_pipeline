@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 class DataIngestor():
     
     def __init__(self):
-        self.url = 'postgresql://onyhtqzn:ej-TLeomNZACBDKE7_PhUfZmCSUcFRW1@surus.db.elephantsql.com/onyhtqzn'
+        self.url = 'postgresql://aljfqalc:eCoshU-kD2hhOB0mJg014ID64-m2e6Er@flora.db.elephantsql.com/aljfqalc'
 
 
     def read_file (self, filepath):
@@ -37,7 +37,7 @@ class DataIngestor():
         elif ext == 'pkl':
             return data.to_pickle(filepath)
 
-    def to_cloud(self, dataframe, to_table, if_exists='fail', index=False):
+    def to_cloud(self, dataframe, to_table, if_exists='replace', index=False):
         # dataframe : what we are pushing
         # to_table : table we are pushing to
         engine = create_engine(url=self.url)
